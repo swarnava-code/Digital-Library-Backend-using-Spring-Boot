@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Hide Sensitive data
-application.properties
+/src/main/resources/application.properties

@@ -23,21 +23,16 @@ public class Book implements Serializable {
     private String isbnNumber;
     private Date publishedDate;
 
-//    @OneToOne
-//    @JoinColumn(name = "author_id")
-//    @JsonIgnore //at a time either book or author can be visible
-//    private Author author;
-
-//    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "book_id")
-//    private List<Author> authors;
-
     @ManyToMany
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private List<Author> authors;
+
+    @OneToMany(mappedBy = "book")
+    @JsonIgnore
+    private List<AuthorBook> authorBooks;
 
     @OneToMany(mappedBy = "book")
     @JsonIgnore

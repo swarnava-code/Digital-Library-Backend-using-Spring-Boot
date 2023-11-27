@@ -1,7 +1,9 @@
 package com.sclab.library.service;
 
+import com.sclab.library.entity.AuthorBook;
 import com.sclab.library.entity.Book;
 import com.sclab.library.model.CustomResponseEntity;
+import com.sclab.library.repository.AuthorBookRepository;
 import com.sclab.library.repository.AuthorRepository;
 import com.sclab.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class AssignAuthorBookService {
     @Autowired
     BookRepository bookRepository;
 
+    @Autowired
+    AuthorBookRepository authorBookRepository;
+
     public ResponseEntity assignAuthorToBook(String bookId, String authorId) {
         var optBook = bookRepository.findById(bookId);
         var optAuthor = authorRepository.findById(authorId);
@@ -24,10 +29,13 @@ public class AssignAuthorBookService {
             var authors = book.getAuthors();
             authors.add(optAuthor.get());
             book.setAuthors(authors);
+            AuthorBook authorBook = new AuthorBook();
+            authorBook.setAuthor(optAuthor.get());
+            authorBook.setBook(optBook.get());
+            authorBookRepository.save(authorBook);
             return CustomResponseEntity.CUSTOM_MSG_BODY(201, book);
         }
         return CustomResponseEntity.NOT_FOUND("optBook:"+optBook.isEmpty()+" , optAuthor:"+optAuthor.isEmpty());
-
     }
 
 }

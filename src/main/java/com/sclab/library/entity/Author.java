@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
-
 import java.util.List;
 
 @Entity
@@ -19,10 +18,11 @@ public class Author {
     private String age;
     private String country;
 
-//    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-//    @JsonIgnore //at a time either book or author can be visible
-//    private List<Book> books;
+    @OneToMany(mappedBy = "author")
+    @JsonIgnore
+    private List<AuthorBook> authorBooks;
 
     @ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Book> books;
 }
