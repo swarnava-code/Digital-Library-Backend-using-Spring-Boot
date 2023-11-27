@@ -1,6 +1,8 @@
 package com.sclab.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.sql.Date;
@@ -8,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table
+@Data
 public class Book implements Serializable {
     @Id
     @UuidGenerator
@@ -20,86 +23,23 @@ public class Book implements Serializable {
     private String isbnNumber;
     private Date publishedDate;
 
-    @OneToOne
-    private Author author;
+//    @OneToOne
+//    @JoinColumn(name = "author_id")
+//    @JsonIgnore //at a time either book or author can be visible
+//    private Author author;
+
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "book_id")
+//    private List<Author> authors;
+
+    @ManyToMany
+    @JoinTable(
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private List<Author> authors;
 
     @OneToMany(mappedBy = "book")
+    @JsonIgnore
     private List<Transaction> transactions;
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setNumberOfPages(int numberOfPages) {
-        this.numberOfPages = numberOfPages;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public void setIsbnNumber(String isbnNumber) {
-        this.isbnNumber = isbnNumber;
-    }
-
-    public void setPublishedDate(Date publishedDate) {
-        this.publishedDate = publishedDate;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getNumberOfPages() {
-        return numberOfPages;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public String getIsbnNumber() {
-        return isbnNumber;
-    }
-
-    public Date getPublishedDate() {
-        return publishedDate;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
 }

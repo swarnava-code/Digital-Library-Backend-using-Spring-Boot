@@ -1,10 +1,15 @@
 package com.sclab.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
+
+import java.util.List;
 
 @Entity
 @Table
+@Data
 public class Author {
     @Id
     @UuidGenerator
@@ -14,47 +19,10 @@ public class Author {
     private String age;
     private String country;
 
-    @OneToOne(mappedBy = "author")
-    private Book book;
+//    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+//    @JsonIgnore //at a time either book or author can be visible
+//    private List<Book> books;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getAge() {
-        return age;
-    }
-
-    public void setAge(String age) {
-        this.age = age;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
+    @ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
+    private List<Book> books;
 }

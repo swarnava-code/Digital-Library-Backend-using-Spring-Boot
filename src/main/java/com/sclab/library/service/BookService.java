@@ -2,7 +2,8 @@ package com.sclab.library.service;
 
 import com.sclab.library.entity.Book;
 import com.sclab.library.model.CreateAuthorResponseModel;
-import com.sclab.library.model.ErrorMessage;
+import com.sclab.library.model.CustomResponseEntity;
+import com.sclab.library.repository.AuthorRepository;
 import com.sclab.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,13 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
+    @Autowired
+    private AuthorRepository authorRepository;
+
     public ResponseEntity createBook(Book bookRequest) {
+//        Author author = authorRepository.findById(authorId).get();
+//        var authors = new List<Author>
+//        bookRequest.setAuthors(author);
         Book book = bookRepository.save(bookRequest);
         CreateAuthorResponseModel responseBody = new CreateAuthorResponseModel();
         responseBody.setId(book.getId());
@@ -27,18 +34,19 @@ public class BookService {
         responseBody.setGenre(book.getGenre());
         responseBody.setIsbnNumber(book.getIsbnNumber());
         responseBody.setPublishedDate(book.getPublishedDate());
+//        var books = author.getBooks();
+//        books.add(book);
+//        author.setBooks(books);
+//        authorRepository.save(author);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
     public ResponseEntity getBookById(String id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if(book.isEmpty()){
-            ErrorMessage errorMessage = new ErrorMessage();
-            errorMessage.setMessage("Book not found with id: "+id);
-            errorMessage.setStatusCode(404);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+        Optional<Book> optBook = bookRepository.findById(id);
+        if (optBook.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(optBook);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(book);
+        return CustomResponseEntity.NOT_FOUND("Book not found with id: " + id);
     }
 
     public ResponseEntity getAllBooks() {

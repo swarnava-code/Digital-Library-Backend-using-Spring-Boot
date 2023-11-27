@@ -1,6 +1,7 @@
 package com.sclab.library.controller;
 
 import com.sclab.library.entity.Author;
+import com.sclab.library.entity.Book;
 import com.sclab.library.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class AuthorController {
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity getBook(@PathVariable Long id){
+    public ResponseEntity getAuthor(@PathVariable String id){
         return authorService.getAuthorById(id);
     }
 

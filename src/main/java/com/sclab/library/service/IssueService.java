@@ -3,7 +3,7 @@ package com.sclab.library.service;
 import com.sclab.library.entity.Book;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Transaction;
-import com.sclab.library.model.ErrorMessage;
+import com.sclab.library.model.CustomMessage;
 import com.sclab.library.repository.BookRepository;
 import com.sclab.library.repository.CardRepository;
 import com.sclab.library.repository.TransactionRepository;
@@ -47,7 +47,7 @@ public class IssueService {
         if(savedData==null){
 
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
-                    new ErrorMessage("transaction not saved", 501)
+                    new CustomMessage("transaction not saved", 501)
             );
         }
         savedData.setBook(null);

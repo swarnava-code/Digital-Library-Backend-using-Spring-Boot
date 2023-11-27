@@ -13,18 +13,17 @@ public class BookController {
     BookService bookService;
 
     @PostMapping("/book")
-    public ResponseEntity createBook(@RequestBody Book book){
+    public ResponseEntity createBook(@RequestBody Book book) {
         return bookService.createBook(book);
     }
 
-
     @GetMapping("/book")
-    public ResponseEntity<List<Book>> getAllBooks(){
+    public ResponseEntity<List<Book>> getAllBooks() {
         return bookService.getAllBooks();
     }
 
     @GetMapping("/book/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable String id){
+    public ResponseEntity<Book> getBook(@PathVariable String id) {
         return bookService.getBookById(id);
     }
 

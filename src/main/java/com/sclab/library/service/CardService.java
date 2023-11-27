@@ -1,7 +1,7 @@
 package com.sclab.library.service;
 
 import com.sclab.library.entity.Card;
-import com.sclab.library.model.ErrorMessage;
+import com.sclab.library.model.CustomMessage;
 import com.sclab.library.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +23,10 @@ public class CardService {
     public ResponseEntity getById(String id) {
         Optional<Card> card = cardRepository.findById(id);
         if(card.isEmpty()){
-            ErrorMessage errorMessage = new ErrorMessage();
-            errorMessage.setMessage("Not found with this id: "+id);
-            errorMessage.setStatusCode(404);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            CustomMessage customMessage = new CustomMessage();
+            customMessage.setMessage("Not found with this id: "+id);
+            customMessage.setStatusCode(404);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
         }
         return ResponseEntity.status(HttpStatus.OK).body(card);
     }
