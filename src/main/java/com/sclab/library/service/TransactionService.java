@@ -1,5 +1,6 @@
 package com.sclab.library.service;
 
+import com.sclab.library.dto.TransactionDTO;
 import com.sclab.library.entity.Book;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Transaction;
@@ -32,7 +33,7 @@ public class TransactionService {
     public ResponseEntity issueBook(String cardId, String bookId) {
         Optional<Card> optCard = cardRepository.findById(cardId);
         Optional<Book> optBook = bookRepository.findById(bookId);
-        Transaction savedData = null;
+        Transaction savedTransaction = null;
         if (optCard.isPresent() && optBook.isPresent()) {
             Card card = optCard.get();
             Book book = optBook.get();
@@ -50,7 +51,7 @@ public class TransactionService {
                 transaction.setBookDueDate(calculateDueDate());
                 transaction.setIssued(true);
                 transaction.setStatus(TransactionStatus.ISSUED);
-                savedData = transactionRepository.save(transaction);
+                savedTransaction = transactionRepository.save(transaction);
                 book.setAvailable(false);
                 bookRepository.save(book);
                 card.setTotalIssuedBook(++countOfIssue);
@@ -70,14 +71,17 @@ public class TransactionService {
                 );
             }
         }
-        if (savedData == null) {
+        if (savedTransaction == null) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new CustomMessage("transaction not saved", 501)
             );
         }
-        savedData.setBook(null);
-        savedData.setCard(null);
-        return ResponseEntity.status(HttpStatus.OK).body(savedData);
+//        savedData.setBook(null);
+//        savedData.setCard(null);
+
+//        Transaction transaction = //... retrieve the transaction
+                TransactionDTO dto = TransactionDTO.fromTransaction(savedTransaction);
+        return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
     private Date calculateDueDate() {
