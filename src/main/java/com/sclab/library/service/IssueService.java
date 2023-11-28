@@ -3,7 +3,8 @@ package com.sclab.library.service;
 import com.sclab.library.entity.Book;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Transaction;
-import com.sclab.library.model.CustomMessage;
+import com.sclab.library.util.CustomMessage;
+import com.sclab.library.util.CustomResponseEntity;
 import com.sclab.library.repository.BookRepository;
 import com.sclab.library.repository.CardRepository;
 import com.sclab.library.repository.TransactionRepository;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.sql.Date;
 import java.util.Optional;
 
@@ -28,24 +30,37 @@ public class IssueService {
         // For simplicity, assume that the cardId and bookId are valid
         // You may need to check if the book is available, the card is valid, etc.
 
-        Optional<Card> card = cardRepository.findById(cardId);
-        Optional<Book> book = bookRepository.findById(bookId);
+        Optional<Card> optCard = cardRepository.findById(cardId);
+        Optional<Book> optBook = bookRepository.findById(bookId);
         Transaction savedData = null;
-        if(card.isPresent() && book.isPresent()){
-            Date currentDate = new Date(System.currentTimeMillis());
-            Transaction transaction = new Transaction();
-            transaction.setCard(card.get());
-            transaction.setBook(book.get());
-            transaction.setTransactionDate(currentDate);
-            transaction.setCreatedOn(currentDate);
-            transaction.setUpdatedOn(currentDate);
-            transaction.setBookDueDate(calculateDueDate());
-            transaction.setIssued(true);
-            transaction.setStatus("ISSUED");
-            savedData = transactionRepository.save(transaction);
+        if (optCard.isPresent() && optBook.isPresent()) {
+            Card card = optCard.get();
+            Book book = optBook.get();
+            boolean isCardActive = card.getStatus().equalsIgnoreCase("Active");
+            boolean isBookAvailable = book.isAvailable();
+            if (isBookAvailable && isCardActive) {
+                Date currentDate = new Date(System.currentTimeMillis());
+                Transaction transaction = new Transaction();
+                transaction.setCard(optCard.get());
+                transaction.setBook(optBook.get());
+                transaction.setTransactionDate(currentDate);
+                transaction.setCreatedOn(currentDate);
+                transaction.setUpdatedOn(currentDate);
+                transaction.setBookDueDate(calculateDueDate());
+                transaction.setIssued(true);
+                transaction.setStatus("ISSUED");
+                savedData = transactionRepository.save(transaction);
+                book.setAvailable(false);
+                bookRepository.save(book);
+            } else {
+                return CustomResponseEntity.CUSTOM_MSG(
+                        CustomResponseEntity.BAD_REQUEST,
+                        "isBookAvailable: "+isBookAvailable+
+                        ", isCardActive: "+isCardActive
+                );
+            }
         }
-        if(savedData==null){
-
+        if (savedData == null) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body(
                     new CustomMessage("transaction not saved", 501)
             );

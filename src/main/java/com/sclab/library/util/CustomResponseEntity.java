@@ -1,9 +1,10 @@
-package com.sclab.library.model;
+package com.sclab.library.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public class CustomResponseEntity {
+    public final static int BAD_REQUEST = 400;
 
     public static ResponseEntity NOT_FOUND(){
         return ResponseEntity

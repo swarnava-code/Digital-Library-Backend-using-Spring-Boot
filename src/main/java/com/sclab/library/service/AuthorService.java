@@ -1,7 +1,7 @@
 package com.sclab.library.service;
 
 import com.sclab.library.entity.Author;
-import com.sclab.library.model.CustomMessage;
+import com.sclab.library.util.CustomMessage;
 import com.sclab.library.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

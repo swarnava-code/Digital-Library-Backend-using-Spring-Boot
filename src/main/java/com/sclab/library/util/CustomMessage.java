@@ -1,4 +1,4 @@
-package com.sclab.library.model;
+package com.sclab.library.util;
 
 public class CustomMessage {
     private String message;

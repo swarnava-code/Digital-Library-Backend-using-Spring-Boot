@@ -2,7 +2,7 @@ package com.sclab.library.service;
 
 import com.sclab.library.entity.AuthorBook;
 import com.sclab.library.entity.Book;
-import com.sclab.library.model.CustomResponseEntity;
+import com.sclab.library.util.CustomResponseEntity;
 import com.sclab.library.repository.AuthorBookRepository;
 import com.sclab.library.repository.AuthorRepository;
 import com.sclab.library.repository.BookRepository;
