@@ -1,7 +1,9 @@
 package com.sclab.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
 
 @Entity
@@ -14,9 +16,11 @@ public class AuthorBook {
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
+    @JsonIgnore
     private Author author;
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
+    @JsonIgnore
     private Book book;
 }

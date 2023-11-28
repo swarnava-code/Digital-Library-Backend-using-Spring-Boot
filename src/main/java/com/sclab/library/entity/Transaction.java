@@ -1,10 +1,12 @@
 package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sclab.library.enumeration.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.sql.Date;
+import java.util.UUID;
 
 @Entity
 @Table
@@ -19,7 +21,8 @@ public class Transaction {
     private boolean isIssued;
     private boolean isReturned;
     private double fineAmount;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
     private Date createdOn;
     private Date updatedOn;
 

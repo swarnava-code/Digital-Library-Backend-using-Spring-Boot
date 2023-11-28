@@ -7,5 +7,5 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class ErrorResponse {
-    private Map<String, String> error;
+    private Map<String, Object> error;
 }

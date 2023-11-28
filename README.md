@@ -1,5 +1,9 @@
+# Digital Library Management System
+
+## Setup
+Step-1:<br>
 Add [application.properties](src/main/resources/application.properties)
- ```shell
+ ```properties
 ## Spring Data Source
 spring.datasource.url=jdbc:mysql://localhost:3306/jbdl60
 spring.datasource.username=root
@@ -11,3 +15,5 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.format_sql=true
 ```
+Step-2:<br>
+Run [SpringBootLibraryApplication.java](src/main/java/com/sclab/library/SpringBootLibraryApplication.java) to start app.

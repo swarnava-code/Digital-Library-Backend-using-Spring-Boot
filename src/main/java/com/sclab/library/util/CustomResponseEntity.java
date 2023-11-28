@@ -45,11 +45,11 @@ public class CustomResponseEntity {
     }
 
     public static ResponseEntity CUSTOM_MSG(int code, Object... keyValuePairs) {
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         int keyValuePairsSize = keyValuePairs.length;
         if (keyValuePairsSize % 2 == 0) {
             for (int i = 1; i < keyValuePairsSize; i+=2) {
-                map.put(keyValuePairs[i - 1].toString(), keyValuePairs[i].toString());
+                map.put(keyValuePairs[i - 1].toString(), keyValuePairs[i]);
             }
         }
         return ResponseEntity
