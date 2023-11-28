@@ -1,6 +1,8 @@
 package com.sclab.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.sql.Date;
@@ -8,6 +10,7 @@ import java.util.List;
 
 @Entity
 @Table
+@Data
 public class Card implements Serializable {
     @Id
     @UuidGenerator
@@ -19,62 +22,6 @@ public class Card implements Serializable {
     private Date updatedOn;
 
     @OneToMany(mappedBy = "card")
+    @JsonIgnore
     private List<Transaction> transactions;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getValidUpto() {
-        return validUpto;
-    }
-
-    public void setValidUpto(Date validUpto) {
-        this.validUpto = validUpto;
-    }
-
-    public Date getCreatedOn() {
-        return createdOn;
-    }
-
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    public void setTransactions(List<Transaction> transactions) {
-        this.transactions = transactions;
-    }
-
 }

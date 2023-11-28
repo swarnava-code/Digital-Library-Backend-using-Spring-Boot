@@ -3,10 +3,15 @@ package com.sclab.library.service;
 import com.sclab.library.entity.Card;
 import com.sclab.library.model.CustomMessage;
 import com.sclab.library.repository.CardRepository;
+import com.sclab.library.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +21,10 @@ public class CardService {
     private CardRepository cardRepository;
 
     public ResponseEntity createCard(Card cardRequest) {
+        Date date = new Date(System.currentTimeMillis());
+        cardRequest.setCreatedOn(date);
+        cardRequest.setUpdatedOn(date);
+        cardRequest.setValidUpto(TimeUtil.addYearInDate(1));
         Card card = cardRepository.save(cardRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(card);
     }
@@ -33,6 +42,7 @@ public class CardService {
 
     public ResponseEntity getAllCards() {
         List<Card> cards = cardRepository.findAll();
+        System.out.println("cards size = "+cards.size());
         return ResponseEntity.status(HttpStatus.OK).body(cards);
     }
 

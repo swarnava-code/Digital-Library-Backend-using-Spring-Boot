@@ -6,6 +6,7 @@ import com.sclab.library.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 public class CardController {
@@ -19,7 +20,7 @@ public class CardController {
     }
 
     @GetMapping("/card")
-    public ResponseEntity getAllCard(){
+    public ResponseEntity<List<Card>> getAllCard(){
         return cardService.getAllCards();
     }
 
