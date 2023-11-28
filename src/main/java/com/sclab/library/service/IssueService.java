@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.sql.Date;
 import java.util.Optional;
 
@@ -24,6 +23,8 @@ public class IssueService {
     private CardRepository cardRepository;
     @Autowired
     private BookRepository bookRepository;
+    private final String ACTIVE = "Active";
+    private final int MAX_ISSUE_ALLOWED = 3;
 
     public ResponseEntity issueBook(String cardId, String bookId) {
         // Perform validation, business logic, and create a new transaction
@@ -36,9 +37,10 @@ public class IssueService {
         if (optCard.isPresent() && optBook.isPresent()) {
             Card card = optCard.get();
             Book book = optBook.get();
-            boolean isCardActive = card.getStatus().equalsIgnoreCase("Active");
+            boolean isCardActive = card.getStatus().equalsIgnoreCase(ACTIVE);
             boolean isBookAvailable = book.isAvailable();
-            if (isBookAvailable && isCardActive) {
+            int countOfIssue = card.getTotalIssuedBook();
+            if (isBookAvailable && isCardActive && countOfIssue < MAX_ISSUE_ALLOWED) {
                 Date currentDate = new Date(System.currentTimeMillis());
                 Transaction transaction = new Transaction();
                 transaction.setCard(optCard.get());
@@ -52,11 +54,14 @@ public class IssueService {
                 savedData = transactionRepository.save(transaction);
                 book.setAvailable(false);
                 bookRepository.save(book);
+                card.setTotalIssuedBook(++countOfIssue);
+                cardRepository.save(card);
             } else {
                 return CustomResponseEntity.CUSTOM_MSG(
                         CustomResponseEntity.BAD_REQUEST,
-                        "isBookAvailable: "+isBookAvailable+
-                        ", isCardActive: "+isCardActive
+                        "isBookAvailable", isBookAvailable,
+                        "isCardActive", isCardActive,
+                        "countOfIssue", countOfIssue
                 );
             }
         }

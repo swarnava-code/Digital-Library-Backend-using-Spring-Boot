@@ -20,6 +20,7 @@ public class Card implements Serializable {
     private Date validUpto;
     private Date createdOn;
     private Date updatedOn;
+    private int totalIssuedBook;
 
     @OneToMany(mappedBy = "card")
     @JsonIgnore

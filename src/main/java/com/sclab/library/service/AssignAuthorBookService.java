@@ -33,7 +33,7 @@ public class AssignAuthorBookService {
             authorBook.setAuthor(optAuthor.get());
             authorBook.setBook(optBook.get());
             authorBookRepository.save(authorBook);
-            return CustomResponseEntity.CUSTOM_MSG_BODY(201, book);
+            return CustomResponseEntity.CUSTOM_MSG(201, book);
         }
         return CustomResponseEntity.NOT_FOUND("optBook:"+optBook.isEmpty()+" , optAuthor:"+optAuthor.isEmpty());
     }
