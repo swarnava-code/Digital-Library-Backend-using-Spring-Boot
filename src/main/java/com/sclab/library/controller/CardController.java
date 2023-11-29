@@ -14,18 +14,21 @@ public class CardController {
     @Autowired
     CardService cardService;
 
-    @PostMapping("/card")
-    public ResponseEntity createCard(@RequestBody Card card){
-        return cardService.createCard(card);
+    @PostMapping("/card/{studentId}")
+    public ResponseEntity createCard(
+            @RequestBody Card card,
+            @PathVariable String studentId
+    ) {
+        return cardService.createCard(card, studentId);
     }
 
     @GetMapping("/card")
-    public ResponseEntity<List<Card>> getAllCard(){
+    public ResponseEntity<List<Card>> getAllCard() {
         return cardService.getAllCards();
     }
 
     @GetMapping("/card/{id}")
-    public ResponseEntity<Book> getSingleCard(@PathVariable String id){
+    public ResponseEntity<Book> getSingleCard(@PathVariable String id) {
         return cardService.getById(id);
     }
 

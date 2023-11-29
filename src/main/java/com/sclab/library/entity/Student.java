@@ -1,8 +1,11 @@
 package com.sclab.library.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.UuidGenerator;
+
 import java.sql.Date;
 
 @Entity
@@ -11,8 +14,8 @@ import java.sql.Date;
 @NoArgsConstructor
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @UuidGenerator
+    private String id;
     private int age;
     private String name;
     private String country;
@@ -20,5 +23,8 @@ public class Student {
     private String phoneNumber;
     private Date createdOn;
     private Date updatedOn;
-    private String cardID;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "card_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Card card;
 }

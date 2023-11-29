@@ -17,7 +17,19 @@ public class CustomResponseEntity {
     public static ResponseEntity NOT_FOUND(String message) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(new CustomMessage().NOT_FOUND());
+                .body(new CustomMessage(message, HttpStatus.NOT_FOUND));
+    }
+
+    public static ResponseEntity BAD_REQUEST() {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new CustomMessage().BAD_REQUEST());
+    }
+
+    public static ResponseEntity BAD_REQUEST(Object... keyValuePairs) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(mapToErrorResponse(keyValuePairs));
     }
 
     public static ResponseEntity CREATED() {
@@ -44,6 +56,11 @@ public class CustomResponseEntity {
                 .body(messageBody);
     }
 
+    public static ResponseEntity CUSTOM_MSG(HttpStatus code, Object... keyValuePairs) {
+        int codeAsInt = Integer.parseInt(code.toString().split(" ")[0]);
+        return CUSTOM_MSG(codeAsInt, keyValuePairs);
+    }
+
     public static ResponseEntity CUSTOM_MSG(int code, Object... keyValuePairs) {
         Map<String, Object> map = new HashMap<>();
         int keyValuePairsSize = keyValuePairs.length;
@@ -55,6 +72,17 @@ public class CustomResponseEntity {
         return ResponseEntity
                 .status(code)
                 .body(new ErrorResponse(map));
+    }
+
+    public static ErrorResponse mapToErrorResponse(Object... keyValuePairs) {
+        Map<String, Object> map = new HashMap<>();
+        int keyValuePairsSize = keyValuePairs.length;
+        if (keyValuePairsSize % 2 == 0) {
+            for (int i = 1; i < keyValuePairsSize; i += 2) {
+                map.put(keyValuePairs[i - 1].toString(), keyValuePairs[i]);
+            }
+        }
+        return new ErrorResponse(map);
     }
 
 }

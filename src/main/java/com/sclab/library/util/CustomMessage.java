@@ -1,5 +1,7 @@
 package com.sclab.library.util;
 
+import org.springframework.http.HttpStatus;
+
 public class CustomMessage {
     private String message;
     private Integer statusCode;
@@ -12,6 +14,12 @@ public class CustomMessage {
     public CustomMessage NOT_FOUND(){
         this.message = "not found";
         this.statusCode = 404;
+        return this;
+    }
+
+    public CustomMessage BAD_REQUEST(){
+        this.message = "bad request";
+        this.statusCode = 400;
         return this;
     }
 
@@ -30,6 +38,11 @@ public class CustomMessage {
     public CustomMessage(String message, Integer statusCode) {
         this.message = message;
         this.statusCode = statusCode;
+    }
+
+    public CustomMessage(String message, HttpStatus statusCode) {
+        this.message = message;
+        this.statusCode = statusCode.ordinal();
     }
 
     public String getMessage() {

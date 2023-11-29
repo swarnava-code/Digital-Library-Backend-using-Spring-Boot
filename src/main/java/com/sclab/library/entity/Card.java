@@ -25,4 +25,5 @@ public class Card implements Serializable {
     @OneToMany(mappedBy = "card")
     @JsonIgnore
     private List<Transaction> transactions;
+
 }
