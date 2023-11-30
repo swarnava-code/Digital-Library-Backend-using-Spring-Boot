@@ -15,17 +15,21 @@ public class TransactionController {
     TransactionService transactionService;
 
     @PostMapping("/transact")
-    public ResponseEntity issueBook(
-            @RequestParam String cardId,
-            @RequestParam String bookId
-    ) {
+    public ResponseEntity issueBook(@RequestParam String cardId,
+                                    @RequestParam String bookId) {
         // Call the service to issue the book
         ResponseEntity responseEntity = transactionService.issueBook(cardId, bookId);
         return responseEntity;
     }
 
+    @PatchMapping("/transact/")
+    public ResponseEntity returnBook(@RequestParam String cardId,
+                                     @RequestParam String bookId) {
+        return transactionService.returnBook(cardId, bookId);
+    }
+
     @GetMapping("/transact/{id}")
-    public Transaction getSingle(@PathVariable String id){
+    public Transaction getSingle(@PathVariable String id) {
         Transaction transaction = transactionService.getSingle(id);
         transaction.setCard(null);
         transaction.setBook(null);
@@ -33,7 +37,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transact")
-    public List<Transaction> getAll(){
+    public List<Transaction> getAll() {
         List<Transaction> transactionList = transactionService.getAll();
         for (Transaction transaction : transactionList) {
             transaction.setBook(null);
@@ -43,15 +47,27 @@ public class TransactionController {
     }
 
     @GetMapping("/transact/{transactionID}/book")
-    public Book getBookUsingTransactionId(@PathVariable String transactionID){
+    public Book getBookUsingTransactionId(@PathVariable String transactionID) {
         Transaction transaction = transactionService.getSingle(transactionID);
         return transaction.getBook();
     }
 
     @GetMapping("/transact/{transactionID}/card")
-    public Card getCardUsingTransactionId(@PathVariable String transactionID){
+    public Card getCardUsingTransactionId(@PathVariable String transactionID) {
         Transaction transaction = transactionService.getSingle(transactionID);
         return transaction.getCard();
+    }
+
+    @GetMapping("/transact/book/{bookId}")
+    public ResponseEntity getAllTransactionByBookId(@PathVariable String bookId) {
+        var transaction = transactionService.getAllTransactionByBookId(bookId);
+        return transaction;
+    }
+
+    @GetMapping("/transact/card/{cardId}")
+    public ResponseEntity getAllTransactionByCardId(@PathVariable String cardId) {
+        var transaction = transactionService.getAllTransactionByCardId(cardId);
+        return transaction;
     }
 
 }
