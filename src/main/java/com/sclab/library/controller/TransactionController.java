@@ -22,7 +22,7 @@ public class TransactionController {
         return responseEntity;
     }
 
-    @PatchMapping("/transact/")
+    @PatchMapping("/transact")
     public ResponseEntity returnBook(@RequestParam String cardId,
                                      @RequestParam String bookId) {
         return transactionService.returnBook(cardId, bookId);
@@ -69,5 +69,4 @@ public class TransactionController {
         var transaction = transactionService.getAllTransactionByCardId(cardId);
         return transaction;
     }
-
 }

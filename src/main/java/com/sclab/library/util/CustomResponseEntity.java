@@ -61,20 +61,25 @@ public class CustomResponseEntity {
         return CUSTOM_MSG(codeAsInt, keyValuePairs);
     }
 
+    public static ResponseEntity CUSTOM_MSG_ERR(HttpStatus code, Object... keyValuePairs) {
+        return CUSTOM_MSG(code, keyValuePairs);
+    }
+
     public static ResponseEntity CUSTOM_MSG(int code, Object... keyValuePairs) {
-        Map<String, Object> map = new HashMap<>();
-        int keyValuePairsSize = keyValuePairs.length;
-        if (keyValuePairsSize % 2 == 0) {
-            for (int i = 1; i < keyValuePairsSize; i+=2) {
-                map.put(keyValuePairs[i - 1].toString(), keyValuePairs[i]);
-            }
-        }
+        Map<String, Object> map = keyValuePairsToMap(keyValuePairs);
         return ResponseEntity
                 .status(code)
                 .body(new ErrorResponse(map));
     }
 
-    public static ErrorResponse mapToErrorResponse(Object... keyValuePairs) {
+    public static ResponseEntity CUSTOM_MSG_OK(int code, Object... keyValuePairs) {
+        Map<String, Object> map = keyValuePairsToMap(keyValuePairs);
+        return ResponseEntity
+                .status(code)
+                .body(new OkResponse(map));
+    }
+
+    public static Map<String, Object> keyValuePairsToMap(Object... keyValuePairs) {
         Map<String, Object> map = new HashMap<>();
         int keyValuePairsSize = keyValuePairs.length;
         if (keyValuePairsSize % 2 == 0) {
@@ -82,7 +87,10 @@ public class CustomResponseEntity {
                 map.put(keyValuePairs[i - 1].toString(), keyValuePairs[i]);
             }
         }
-        return new ErrorResponse(map);
+        return map;
     }
 
+    public static ErrorResponse mapToErrorResponse(Object... keyValuePairs) {
+        return new ErrorResponse(keyValuePairsToMap(keyValuePairs));
+    }
 }

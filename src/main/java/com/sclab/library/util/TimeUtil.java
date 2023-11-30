@@ -5,6 +5,10 @@ import java.util.Calendar;
 
 public class TimeUtil {
 
+    public static java.sql.Date currentDate() {
+        return getDate(0);
+    }
+
     /**
      * @param yearAmount:  1
      * @return java.util.Date
@@ -15,7 +19,7 @@ public class TimeUtil {
         return sqlDate;
     }
 
-    private static java.sql.Date getDate(int yearAmount) {
+    public static java.sql.Date getDate(int yearAmount) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.YEAR, yearAmount);
         java.sql.Date sqlDate = new Date(calendar.getTimeInMillis());

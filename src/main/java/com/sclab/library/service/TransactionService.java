@@ -10,16 +10,18 @@ import com.sclab.library.repository.CardRepository;
 import com.sclab.library.repository.TransactionRepository;
 import com.sclab.library.util.CustomMessage;
 import com.sclab.library.util.CustomResponseEntity;
+import com.sclab.library.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+//@Transactional
 public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
@@ -27,7 +29,6 @@ public class TransactionService {
     private CardRepository cardRepository;
     @Autowired
     private BookRepository bookRepository;
-
     private final String ACTIVE = "Active";
     private final int MAX_ISSUE_ALLOWED = 3;
 
@@ -77,10 +78,6 @@ public class TransactionService {
                     new CustomMessage("transaction not saved", 501)
             );
         }
-//        savedData.setBook(null);
-//        savedData.setCard(null);
-
-//        Transaction transaction = //... retrieve the transaction
         TransactionDTO dto = TransactionDTO.fromTransaction(savedTransaction);
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
@@ -95,14 +92,33 @@ public class TransactionService {
         return CustomResponseEntity.CUSTOM_MSG(200, transactions);
     }
 
+    @Transactional
     public ResponseEntity returnBook(String cardId, String bookId) {
         var optBook = bookRepository.findById(bookId);
         var optCard = cardRepository.findById(cardId);
         if (optCard.isPresent() && optBook.isPresent()) {
             Book book = optBook.get();
             Card card = optCard.get();
+            List<Transaction> transactions = transactionRepository.findByCardIdAndBookIdAndStatusEquals(cardId, bookId, TransactionStatus.ISSUED);
+            Transaction transaction = transactions.get(0);
+            card.setTotalIssuedBook(card.getTotalIssuedBook() - 1);
+            card.setUpdatedOn(TimeUtil.currentDate());
+            book.setAvailable(true);
+            transaction.setReturned(true);
+            transaction.setIssued(false);
+            transaction.setUpdatedOn(TimeUtil.currentDate());
+            transaction.setStatus(TransactionStatus.RETURNED);
+            // With @Transactional, don't need to call save()
+            return CustomResponseEntity.CUSTOM_MSG_OK(200,
+                    "book", book,
+                    "card", card,
+                    "transaction", transaction
+            );
         }
-        return CustomResponseEntity.CUSTOM_MSG(200, "testing");
+        return CustomResponseEntity.CUSTOM_MSG_ERR(HttpStatus.NOT_FOUND,
+                "isBookPresent", optBook.isPresent(),
+                "isCardPresent", optCard.isPresent()
+        );
     }
 
     private Date calculateDueDate() {
@@ -119,5 +135,4 @@ public class TransactionService {
         Optional<Transaction> optTransaction = transactionRepository.findById(id);
         return optTransaction.get();
     }
-
 }
