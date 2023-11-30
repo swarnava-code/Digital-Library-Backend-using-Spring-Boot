@@ -28,6 +28,12 @@ public class TransactionController {
         return transactionService.returnBook(cardId, bookId);
     }
 
+    @GetMapping("/fine")
+    public ResponseEntity calculateFine(@RequestParam String cardId,
+                                     @RequestParam String bookId) {
+        return transactionService.calculateFine(cardId, bookId);
+    }
+
     @GetMapping("/transact/{id}")
     public Transaction getSingle(@PathVariable String id) {
         Transaction transaction = transactionService.getSingle(id);

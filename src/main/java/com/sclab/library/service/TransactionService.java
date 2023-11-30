@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-//@Transactional
 public class TransactionService {
     @Autowired
     TransactionRepository transactionRepository;
@@ -31,6 +30,7 @@ public class TransactionService {
     private BookRepository bookRepository;
     private final String ACTIVE = "Active";
     private final int MAX_ISSUE_ALLOWED = 3;
+    private final int TOTAL_BORROW_DAYS = 14;
 
     public ResponseEntity issueBook(String cardId, String bookId) {
         Optional<Card> optCard = cardRepository.findById(cardId);
@@ -50,7 +50,7 @@ public class TransactionService {
                 transaction.setTransactionDate(currentDate);
                 transaction.setCreatedOn(currentDate);
                 transaction.setUpdatedOn(currentDate);
-                transaction.setBookDueDate(calculateDueDate());
+                transaction.setBookDueDate(TimeUtil.addDayInDate(TOTAL_BORROW_DAYS));//calculateDueDate()
                 transaction.setIssued(true);
                 transaction.setStatus(TransactionStatus.ISSUED);
                 savedTransaction = transactionRepository.save(transaction);
@@ -101,18 +101,43 @@ public class TransactionService {
             Card card = optCard.get();
             List<Transaction> transactions = transactionRepository.findByCardIdAndBookIdAndStatusEquals(cardId, bookId, TransactionStatus.ISSUED);
             Transaction transaction = transactions.get(0);
-            card.setTotalIssuedBook(card.getTotalIssuedBook() - 1);
-            card.setUpdatedOn(TimeUtil.currentDate());
-            book.setAvailable(true);
-            transaction.setReturned(true);
-            transaction.setIssued(false);
-            transaction.setUpdatedOn(TimeUtil.currentDate());
-            transaction.setStatus(TransactionStatus.RETURNED);
-            // With @Transactional, don't need to call save()
-            return CustomResponseEntity.CUSTOM_MSG_OK(200,
-                    "book", book,
-                    "card", card,
-                    "transaction", transaction
+            boolean isBookAvailable = book.isAvailable();
+            int totalIssuedBooks = card.getTotalIssuedBook();
+            boolean isBookReturned = transaction.isReturned();
+            boolean isBookIssued = transaction.isIssued();
+            TransactionStatus transactionStatus = transaction.getStatus();
+            Date currentDate = TimeUtil.currentDate();
+            if (!isBookAvailable &&
+                    totalIssuedBooks > 0 &&
+                    totalIssuedBooks <= 3 &&
+                    !isBookReturned &&
+                    isBookIssued &&
+                    transactionStatus.equals(TransactionStatus.ISSUED)
+            ) {
+                card.setTotalIssuedBook(card.getTotalIssuedBook() - 1);
+                card.setUpdatedOn(currentDate);
+                book.setAvailable(true);
+                transaction.setReturned(true);
+                transaction.setIssued(false);
+                transaction.setUpdatedOn(currentDate);
+                transaction.setStatus(TransactionStatus.RETURNED);
+                transaction.setCard(null);
+                int fineAmount = calculateFine(transaction.getBookDueDate());
+                transaction.setFineAmount(transaction.getFineAmount() + fineAmount);
+                // With @Transactional, don't need to call save()
+                return CustomResponseEntity.CUSTOM_MSG_OK(200,
+                        "fineAmount", fineAmount,
+                        "book", book,
+                        "card", card,
+                        "transaction", transaction
+                );
+            }
+            return CustomResponseEntity.CUSTOM_MSG_ERR(HttpStatus.BAD_REQUEST,
+                    "isBookAvailable", isBookAvailable,
+                    "totalIssuedBooks", totalIssuedBooks,
+                    "isBookReturned", isBookReturned,
+                    "isBookIssued", isBookIssued,
+                    "transactionStatus", transactionStatus
             );
         }
         return CustomResponseEntity.CUSTOM_MSG_ERR(HttpStatus.NOT_FOUND,
@@ -121,9 +146,40 @@ public class TransactionService {
         );
     }
 
-    private Date calculateDueDate() {
-        Date date = new Date(System.currentTimeMillis());
-        return Date.valueOf(date.toLocalDate().plusDays(14));
+    public ResponseEntity calculateFine(String cardId, String bookId) {
+        List<Transaction> transactions = transactionRepository.findByCardIdAndBookIdAndStatusEquals(cardId, bookId, TransactionStatus.ISSUED);
+        if (transactions.size() <= 0) {
+            return CustomResponseEntity.CUSTOM_MSG_ERR(HttpStatus.NOT_FOUND,
+                    "message", "it is returned"
+            );
+        }
+        Transaction transaction = transactions.get(0);
+        double fineAmount = transaction.getFineAmount();
+        boolean isReturned = transaction.isReturned();
+        if (!isReturned) {
+            fineAmount = calculateFine(transaction.getBookDueDate());
+        }
+        return CustomResponseEntity.CUSTOM_MSG_OK(200,
+                "isReturned", isReturned,
+                "fineAmount", fineAmount
+        );
+    }
+
+    /**
+     * Once student cross due date , they have to pay ₹1/- per day
+     *
+     * @param dueDate
+     * @return
+     */
+    private int calculateFine(Date dueDate) {
+        Date currentDate = TimeUtil.currentDate();
+        int fine = 0;
+        boolean isFineApplicable = dueDate.before(currentDate);
+        if (isFineApplicable) {
+            Long days = TimeUtil.differenceInDays(dueDate, currentDate);
+            fine = days.intValue();
+        }
+        return fine;
     }
 
     public List<Transaction> getAll() {
