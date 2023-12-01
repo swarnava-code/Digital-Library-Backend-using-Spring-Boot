@@ -18,7 +18,7 @@ public class StudentController {
     }
 
     @GetMapping("/student/{id}")
-    public ResponseEntity createStudent(@PathVariable String id){
+    public ResponseEntity retrieveStudent(@PathVariable String id){
         return studentService.retrieve(id);
     }
 

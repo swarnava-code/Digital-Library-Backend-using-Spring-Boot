@@ -33,7 +33,7 @@ public class StudentService {
         Optional<Student> optStudent = studentRepository.findById(id);
         if (optStudent.isPresent()) {
             Student existingStudent = optStudent.get();
-            Student updatedStudent = existingStudent.setStudentFieldsOrDefault(student);
+            Student updatedStudent = existingStudent.setStudentOrDefault(student);
             Student replacedStudent = studentRepository.save(updatedStudent);
             return CustomResponseEntity.CUSTOM_MSG(200, replacedStudent);
         }

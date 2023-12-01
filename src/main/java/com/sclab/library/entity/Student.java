@@ -27,7 +27,7 @@ public class Student {
     @JsonIgnore
     private Card card;
 
-    public Student setStudentFieldsOrDefault(Student newStudent) {
+    public Student setStudentOrDefault(Student newStudent) {
         if (newStudent == null) {
             return null;
         }
