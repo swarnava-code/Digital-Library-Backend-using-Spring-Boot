@@ -19,7 +19,17 @@ public class StudentController {
 
     @GetMapping("/student/{id}")
     public ResponseEntity createStudent(@PathVariable String id){
-        return studentService.update(id);
+        return studentService.retrieve(id);
     }
 
+    @PutMapping("/student/{id}")
+    public ResponseEntity updateStudent(@PathVariable String id,
+                                        @RequestBody Student student){
+        return studentService.update(id, student);
+    }
+
+    @DeleteMapping("/student/{id}")
+    public ResponseEntity deleteStudent(@PathVariable String id){
+        return studentService.delete(id);
+    }
 }

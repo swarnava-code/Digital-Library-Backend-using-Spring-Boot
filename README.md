@@ -17,3 +17,6 @@ spring.jpa.properties.hibernate.format_sql=true
 ```
 Step-2:<br>
 Run [SpringBootLibraryApplication.java](src/main/java/com/sclab/library/SpringBootLibraryApplication.java) to start app.
+
+## Resources
+ - [Spring Docs](https://spring.io/guides)
