@@ -101,13 +101,15 @@ public class TransactionService {
             Card card = optCard.get();
             List<Transaction> transactions = transactionRepository.findByCardIdAndBookIdAndStatusEquals(cardId, bookId, TransactionStatus.ISSUED);
             Transaction transaction = transactions.get(0);
+            boolean isCardActive = card.getStatus().equalsIgnoreCase(ACTIVE);
             boolean isBookAvailable = book.isAvailable();
             int totalIssuedBooks = card.getTotalIssuedBook();
             boolean isBookReturned = transaction.isReturned();
             boolean isBookIssued = transaction.isIssued();
             TransactionStatus transactionStatus = transaction.getStatus();
             Date currentDate = TimeUtil.currentDate();
-            if (!isBookAvailable &&
+            if (isCardActive &&
+                    !isBookAvailable &&
                     totalIssuedBooks > 0 &&
                     totalIssuedBooks <= 3 &&
                     !isBookReturned &&

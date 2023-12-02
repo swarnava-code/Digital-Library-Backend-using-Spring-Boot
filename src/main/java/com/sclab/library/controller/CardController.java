@@ -15,7 +15,7 @@ public class CardController {
     CardService cardService;
 
     @PostMapping("/card/{studentId}")
-    public ResponseEntity createCard(
+    public ResponseEntity issueCard(
             @RequestBody Card card,
             @PathVariable String studentId
     ) {
