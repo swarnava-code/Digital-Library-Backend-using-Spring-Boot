@@ -37,4 +37,22 @@ public class Book implements Serializable {
     @OneToMany(mappedBy = "book")
     @JsonIgnore
     private List<Transaction> transactions;
+
+    public Book setBookOrDefault(Book newBook) {
+        if (newBook == null) {
+            return null;
+        }
+        this.setName(newBook.getName() != null ? newBook.getName() : this.getName());
+        this.setNumberOfPages(newBook.getNumberOfPages() != 0 ? newBook.getNumberOfPages() : this.getNumberOfPages());
+        this.setLanguage(newBook.getLanguage() != null ? newBook.getLanguage() : this.getLanguage());
+        this.setAvailable(newBook.isAvailable() || this.isAvailable());
+        this.setGenre(newBook.getGenre() != null ? newBook.getGenre() : this.getGenre());
+        this.setIsbnNumber(newBook.getIsbnNumber() != null ? newBook.getIsbnNumber() : this.getIsbnNumber());
+        this.setPublishedDate(newBook.getPublishedDate() != null ? newBook.getPublishedDate() : this.getPublishedDate());
+        this.setAuthors(newBook.getAuthors() != null ? newBook.getAuthors() : this.getAuthors());
+        this.setAuthorBooks(newBook.getAuthorBooks() != null ? newBook.getAuthorBooks() : this.getAuthorBooks());
+        this.setTransactions(newBook.getTransactions() != null ? newBook.getTransactions() : this.getTransactions());
+        return this;
+    }
+
 }

@@ -21,9 +21,6 @@ public class BookService {
     private AuthorRepository authorRepository;
 
     public ResponseEntity createBook(Book bookRequest) {
-//        Author author = authorRepository.findById(authorId).get();
-//        var authors = new List<Author>
-//        bookRequest.setAuthors(author);
         Book book = bookRepository.save(bookRequest);
         CreateAuthorResponseModel responseBody = new CreateAuthorResponseModel();
         responseBody.setId(book.getId());
@@ -34,10 +31,6 @@ public class BookService {
         responseBody.setGenre(book.getGenre());
         responseBody.setIsbnNumber(book.getIsbnNumber());
         responseBody.setPublishedDate(book.getPublishedDate());
-//        var books = author.getBooks();
-//        books.add(book);
-//        author.setBooks(books);
-//        authorRepository.save(author);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
     }
 
@@ -52,6 +45,31 @@ public class BookService {
     public ResponseEntity getAllBooks() {
         List<Book> books = bookRepository.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(books);
+    }
+
+    public ResponseEntity update(String id, Book book) {
+        var optBook = bookRepository.findById(id);
+        if (optBook.isPresent()) {
+            Book existingBook = optBook.get();
+            book.setId(id);
+            Book updatedBook = existingBook.setBookOrDefault(book);
+            Book replacedBook = bookRepository.save(updatedBook);
+            return CustomResponseEntity.CUSTOM_MSG(200, replacedBook);
+        }
+        return CustomResponseEntity.NOT_FOUND();
+    }
+
+    public ResponseEntity delete(String id) {
+        var optBook = bookRepository.findById(id);
+        if (optBook.isEmpty()) {
+            return CustomResponseEntity.NOT_FOUND(
+                    "bookId", id,
+                    "message", "book not found.",
+                    "httpCode", HttpStatus.NOT_FOUND.value()
+            );
+        }
+        bookRepository.deleteById(id);
+        return CustomResponseEntity.NO_CONTENT();
     }
 
 }

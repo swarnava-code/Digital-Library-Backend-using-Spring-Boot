@@ -8,6 +8,12 @@ import java.util.Map;
 public class CustomResponseEntity {
     public final static int BAD_REQUEST = 400;
 
+    public static ResponseEntity NO_CONTENT() {
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(new CustomMessage("NO_CONTENT", HttpStatus.NO_CONTENT));
+    }
+
     public static ResponseEntity NOT_FOUND() {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -18,6 +24,12 @@ public class CustomResponseEntity {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(new CustomMessage(message, HttpStatus.NOT_FOUND));
+    }
+
+    public static ResponseEntity NOT_FOUND(Object... keyValuePairs) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(mapToErrorResponse(keyValuePairs));
     }
 
     public static ResponseEntity BAD_REQUEST() {
@@ -48,6 +60,12 @@ public class CustomResponseEntity {
         return ResponseEntity
                 .status(code)
                 .body(new CustomMessage(message, code));
+    }
+
+    public static ResponseEntity CUSTOM_MSG(HttpStatus httpStatus, String message) {
+        return ResponseEntity
+                .status(httpStatus)
+                .body(new CustomMessage(message, httpStatus));
     }
 
     public static ResponseEntity CUSTOM_MSG(int code, Object messageBody) {
@@ -92,5 +110,9 @@ public class CustomResponseEntity {
 
     public static ErrorResponse mapToErrorResponse(Object... keyValuePairs) {
         return new ErrorResponse(keyValuePairsToMap(keyValuePairs));
+    }
+
+    public static OkResponse mapToOkResponse(Object... keyValuePairs) {
+        return new OkResponse(keyValuePairsToMap(keyValuePairs));
     }
 }

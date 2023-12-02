@@ -13,12 +13,12 @@ public class BookController {
     BookService bookService;
 
     @PostMapping("/book")
-    public ResponseEntity createBook(@RequestBody Book book) {
+    public ResponseEntity create(@RequestBody Book book) {
         return bookService.createBook(book);
     }
 
     @GetMapping("/book")
-    public ResponseEntity<List<Book>> getAllBooks() {
+    public ResponseEntity<List<Book>> getAll() {
         return bookService.getAllBooks();
     }
 
@@ -27,4 +27,14 @@ public class BookController {
         return bookService.getBookById(id);
     }
 
+    @PutMapping("/book/{id}")
+    public ResponseEntity update(@PathVariable String id,
+                                        @RequestBody Book book){
+        return bookService.update(id, book);
+    }
+
+    @DeleteMapping("/book/{id}")
+    public ResponseEntity delete(@PathVariable String id){
+        return bookService.delete(id);
+    }
 }

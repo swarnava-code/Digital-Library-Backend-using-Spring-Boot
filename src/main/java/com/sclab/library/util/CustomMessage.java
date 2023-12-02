@@ -11,6 +11,12 @@ public class CustomMessage {
         this.statusCode = 404;
     }
 
+    public CustomMessage NO_CONTENT(){
+        this.message = "no_content";
+        this.statusCode = 204;
+        return this;
+    }
+
     public CustomMessage NOT_FOUND(){
         this.message = "not found";
         this.statusCode = 404;
@@ -42,7 +48,7 @@ public class CustomMessage {
 
     public CustomMessage(String message, HttpStatus statusCode) {
         this.message = message;
-        this.statusCode = statusCode.ordinal();
+        this.statusCode = statusCode.value();
     }
 
     public String getMessage() {
@@ -60,5 +66,4 @@ public class CustomMessage {
     public void setStatusCode(Integer statusCode) {
         this.statusCode = statusCode;
     }
-
 }
