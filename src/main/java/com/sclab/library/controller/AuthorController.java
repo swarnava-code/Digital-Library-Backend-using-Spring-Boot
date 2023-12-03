@@ -1,6 +1,7 @@
 package com.sclab.library.controller;
 
 import com.sclab.library.entity.Author;
+import com.sclab.library.entity.Book;
 import com.sclab.library.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +14,24 @@ public class AuthorController {
     AuthorService authorService;
 
     @PostMapping("/author")
-    public ResponseEntity createBook(@RequestBody Author author){
+    public ResponseEntity create(@RequestBody Author author){
         return authorService.createAuthor(author);
     }
 
     @GetMapping("/author/{id}")
-    public ResponseEntity getAuthor(@PathVariable String id){
+    public ResponseEntity get(@PathVariable String id){
         return authorService.getAuthorById(id);
+    }
+
+    @PutMapping("/author/{id}")
+    public ResponseEntity update(@PathVariable String id,
+                                 @RequestBody Author author){
+        return authorService.update(id, author);
+    }
+
+    @DeleteMapping("/author/{id}")
+    public ResponseEntity delete(@PathVariable String id){
+        return authorService.delete(id);
     }
 
 }
