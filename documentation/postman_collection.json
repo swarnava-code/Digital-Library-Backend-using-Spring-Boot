@@ -1,0 +1,1034 @@
+{
+	"info": {
+		"_postman_id": "3236cf0f-045e-40cf-8636-259d422724a8",
+		"name": "Digital Library",
+		"description": "1. Librarian can create Book, Author, and other details\n    \n2. User can issue book.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19084984"
+	},
+	"item": [
+		{
+			"name": "Author",
+			"item": [
+				{
+					"name": "Create Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"authorId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Mr. Chusmaan Gaar\",\n    \"email\": \"gaar.chus@gmail.com\",\n    \"age\": \"24\",\n    \"country\": \"India\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/author",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"author"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/author/{{authorId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"author",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sona Da\",\n    \"email\": \"sona@gmail.com\",\n    \"age\": \"26\",\n    \"country\": \"India\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/author/{{authorId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"author",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Author",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/author/{{authorId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"author",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book",
+			"item": [
+				{
+					"name": "Create Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"",
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"bookId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Science of Milk Produce\",\n    \"numberOfPages\": 534,\n    \"language\": \"Urdu\",\n    \"available\": true,\n    \"genre\": \"gggg\",\n    \"isbnNumber\": \"9788576567443\",\n    \"publishedDate\": \"2004-06-30\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/book",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book"
+							],
+							"query": [
+								{
+									"key": "authorId",
+									"value": "{{authorId}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get One Book",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3333,\n    \"name\": \"Data Structures Through C In Depth\",\n    \"numberOfPages\": 524,\n    \"language\": \"English\",\n    \"available\": true,\n    \"genre\": \"gggg\",\n    \"isbnNumber\": \"9788176567411\",\n    \"publishedDate\": \"2004-05-30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/book/{{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Book",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3333,\n    \"name\": \"Data Structures Through C In Depth\",\n    \"numberOfPages\": 524,\n    \"language\": \"English\",\n    \"available\": true,\n    \"genre\": \"gggg\",\n    \"isbnNumber\": \"9788176567411\",\n    \"publishedDate\": \"2004-05-30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/book",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 3333,\n    \"name\": \"Algo Through C In Depth\",\n    \"numberOfPages\": 524,\n    \"language\": \"English\",\n    \"available\": true,\n    \"genre\": \"gggg\",\n    \"isbnNumber\": \"9788176567411\",\n    \"publishedDate\": \"2004-05-30\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/book/{{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/book/{{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "We can perform CRUD operation with books."
+		},
+		{
+			"name": "Assign Authors to Book",
+			"item": [
+				{
+					"name": "Assign Author to Book",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/book/{{bookId}}/author/{{authorId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"book",
+								"{{bookId}}",
+								"author",
+								"{{authorId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "One book can witten by single author as well as multiple author."
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Create Student",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"studentId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"age\": 35,\n  \"name\": \"John Doe W\",\n  \"country\": \"United States\",\n  \"email\": \"john.dorre@example.com\",\n  \"phoneNumber\": \"+1 555-1234\",\n  \"createdOn\": \"2023-11-28T10:30:00.000Z\",\n  \"updatedOn\": \"2023-12-05T15:45:00.000Z\",\n  \"cardID\": \"a3fe51c0-6dce-4abf-b3c4-43e3728b5012\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/student",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/student/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"age\": 100,\n  \"name\": \"John Doe Wilingson\",\n  \"country\": \"United Kingdom\",\n  \"email\": \"john.king@example.com\",\n  \"phoneNumber\": \"+1 695-1234\",\n  \"createdOn\": \"2023-11-28T10:30:00.000Z\",\n  \"updatedOn\": \"2023-12-05T15:45:00.000Z\",\n  \"cardID\": \"a3fe51c0-6dce-4abf-b3c4-43e3728b5012\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/student/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/student/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"student",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Card",
+			"item": [
+				{
+					"name": "Issue Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"cardId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Active\",\n    \"email\": \"ok@gmail.com\",\n    \"validUpto\": \"2024-06-30\",\n    \"createdOn\": \"2023-06-30\",\n    \"updatedOn\": \"2023-06-30\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/card/{{studentId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"card",
+								"{{studentId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/card/{{cardId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"card",
+								"{{cardId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/card",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"card"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Issue Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"transactionId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact?cardId={{cardId}}&bookId={{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "{{cardId}}"
+								},
+								{
+									"key": "bookId",
+									"value": "{{bookId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Return Book and calc fine",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"transactionId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact?cardId={{cardId}}&bookId={{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "{{cardId}}"
+								},
+								{
+									"key": "bookId",
+									"value": "{{bookId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calc Fine Only",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Get and set id\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var id = jsonData.id;",
+									"    pm.collectionVariables.set(\"transactionId\", id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/fine?cardId={{cardId}}&bookId={{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"fine"
+							],
+							"query": [
+								{
+									"key": "cardId",
+									"value": "{{cardId}}"
+								},
+								{
+									"key": "bookId",
+									"value": "{{bookId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Transaction",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact/{{transactionId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact",
+								"{{transactionId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Transaction",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Card using transaction id Copy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact/{{transactionId}}/card",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact",
+								"{{transactionId}}",
+								"card"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all transaction by book id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact/book/{{bookId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact",
+								"book",
+								"{{bookId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all transaction by card id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/transact/card/{{cardId}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"transact",
+								"card",
+								"{{cardId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Get all transactions about issue books."
+		},
+		{
+			"name": "Tools",
+			"item": [
+				{
+					"name": "Actuator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actuator health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actuator prometheus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/prometheus",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"actuator",
+								"prometheus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "prometheus",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090"
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "grafana",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000"
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/test",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "bookId",
+			"value": ""
+		},
+		{
+			"key": "authorId",
+			"value": ""
+		},
+		{
+			"key": "cardId",
+			"value": ""
+		},
+		{
+			"key": "transactionId",
+			"value": ""
+		},
+		{
+			"key": "studentId",
+			"value": ""
+		}
+	]
+}
