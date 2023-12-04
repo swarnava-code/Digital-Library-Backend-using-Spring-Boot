@@ -12,9 +12,11 @@ import java.util.List;
 @Table
 @Data
 public class Card implements Serializable {
+
     @Id
     @UuidGenerator
     private String id;
+
     private String status;
     private String email;
     private Date validUpto;
