@@ -6,8 +6,8 @@ import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table
@@ -31,15 +31,15 @@ public class Book implements Serializable {
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private List<Author> authors;
+    private Set<Author> authors;
 
     @OneToMany(mappedBy = "book")
     @JsonIgnore
-    private List<AuthorBook> authorBooks;
+    private Set<AuthorBook> authorBooks;
 
     @OneToMany(mappedBy = "book")
     @JsonIgnore
-    private List<Transaction> transactions;
+    private Set<Transaction> transactions;
 
     public Book setBookOrDefault(Book newBook) {
         if (newBook == null) {

@@ -11,13 +11,13 @@ import java.util.List;
 
 @RestController
 public class TransactionController {
+
     @Autowired
     TransactionService transactionService;
 
     @PostMapping("/transact")
     public ResponseEntity issueBook(@RequestParam String cardId,
                                     @RequestParam String bookId) {
-        // Call the service to issue the book
         ResponseEntity responseEntity = transactionService.issueBook(cardId, bookId);
         return responseEntity;
     }
@@ -37,18 +37,12 @@ public class TransactionController {
     @GetMapping("/transact/{id}")
     public Transaction getSingle(@PathVariable String id) {
         Transaction transaction = transactionService.getSingle(id);
-        transaction.setCard(null);
-        transaction.setBook(null);
         return transaction;
     }
 
     @GetMapping("/transact")
     public List<Transaction> getAll() {
         List<Transaction> transactionList = transactionService.getAll();
-        for (Transaction transaction : transactionList) {
-            transaction.setBook(null);
-            transaction.setCard(null);
-        }
         return transactionList;
     }
 
@@ -75,4 +69,5 @@ public class TransactionController {
         var transaction = transactionService.getAllTransactionByCardId(cardId);
         return transaction;
     }
+
 }

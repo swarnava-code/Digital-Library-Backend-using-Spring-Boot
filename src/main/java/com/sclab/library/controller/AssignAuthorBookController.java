@@ -17,7 +17,6 @@ public class AssignAuthorBookController {
             @PathVariable String bookId,
             @PathVariable String authorId
     ) {
-        System.out.println("ho66e...");
         return assignAuthorBookService.assignAuthorToBook(bookId, authorId);
     }
 

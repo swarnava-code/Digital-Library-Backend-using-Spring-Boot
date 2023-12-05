@@ -1,12 +1,13 @@
 package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -26,6 +27,7 @@ public class Card implements Serializable {
 
     @OneToMany(mappedBy = "card")
     @JsonIgnore
-    private List<Transaction> transactions;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Set<Transaction> transactions;
 
 }

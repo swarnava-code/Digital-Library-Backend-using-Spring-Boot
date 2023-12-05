@@ -1,12 +1,12 @@
 package com.sclab.library.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sclab.library.enumeration.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.sql.Date;
-import java.util.UUID;
 
 @Entity
 @Table
@@ -28,11 +28,13 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "card_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Card card;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Book book;
 }
