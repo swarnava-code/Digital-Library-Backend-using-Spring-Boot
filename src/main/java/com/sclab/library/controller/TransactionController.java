@@ -30,7 +30,7 @@ public class TransactionController {
 
     @GetMapping("/fine")
     public ResponseEntity calculateFine(@RequestParam String cardId,
-                                     @RequestParam String bookId) {
+                                        @RequestParam String bookId) {
         return transactionService.calculateFine(cardId, bookId);
     }
 

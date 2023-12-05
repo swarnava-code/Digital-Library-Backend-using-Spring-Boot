@@ -1,12 +1,18 @@
 package com.sclab.library.util;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
 
 public class TimeUtil {
 
     public static Date currentDate() {
         return plusDay(0);
+    }
+
+    public static Timestamp currentTimeStamp(){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        return timestamp;
     }
 
     /**

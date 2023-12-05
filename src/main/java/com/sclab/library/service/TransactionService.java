@@ -1,6 +1,7 @@
 package com.sclab.library.service;
 
 import com.sclab.library.dto.TransactionDTO;
+import com.sclab.library.entity.Author;
 import com.sclab.library.entity.Book;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Transaction;
@@ -16,18 +17,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TransactionService {
+
     @Autowired
     TransactionRepository transactionRepository;
+
     @Autowired
     private CardRepository cardRepository;
+
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private KafkaProducerService kafkaProducerService;
+
     private final String ACTIVE = "Active";
     private final int MAX_ISSUE_ALLOWED = 3;
     private final int TOTAL_BORROW_DAYS = 14;
@@ -35,10 +44,12 @@ public class TransactionService {
     public ResponseEntity issueBook(String cardId, String bookId) {
         Optional<Card> optCard = cardRepository.findById(cardId);
         Optional<Book> optBook = bookRepository.findById(bookId);
+        Card card = null;
+        Book book = null;
         Transaction savedTransaction = null;
         if (optCard.isPresent() && optBook.isPresent()) {
-            Card card = optCard.get();
-            Book book = optBook.get();
+            card = optCard.get();
+            book = optBook.get();
             Date currentDate = new Date(System.currentTimeMillis());
             boolean isCardActive = card.getStatus().equalsIgnoreCase(ACTIVE);
             boolean isBookAvailable = book.isAvailable();
@@ -79,7 +90,16 @@ public class TransactionService {
             );
         }
         TransactionDTO dto = TransactionDTO.fromTransaction(savedTransaction);
+        kafkaProducerService.sendBookIssuedNotification(cardId, book.getName(), getAuthorsName(book), dto.getBookDueDate().toString());
         return ResponseEntity.status(HttpStatus.OK).body(dto);
+    }
+
+    private String getAuthorsName(Book book){
+        StringBuilder authors = new StringBuilder();
+        for (Author author : book.getAuthors()) {
+            authors.append(author.getName() + ", ");
+        }
+        return authors.toString();
     }
 
     public ResponseEntity getAllTransactionByBookId(String bookId) {
@@ -127,6 +147,13 @@ public class TransactionService {
                 int fineAmount = calculateFine(transaction.getBookDueDate());
                 transaction.setFineAmount(transaction.getFineAmount() + fineAmount);
                 // With @Transactional, don't need to call save()
+
+                kafkaProducerService.sendBookReturnedNotification(cardId, book.getName(), getAuthorsName(book),
+                        transaction.getCreatedOn().toString(),
+                        transaction.getBookDueDate().toString(),
+                        transaction.getFineAmount()
+                );
+
                 return CustomResponseEntity.CUSTOM_MSG_OK(200,
                         "fineAmount", fineAmount,
                         "book", book,
