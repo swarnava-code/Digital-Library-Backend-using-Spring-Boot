@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Table
 @Data
-public class Author {
+public class Author implements Serializable {
 
     @Id
     @UuidGenerator
