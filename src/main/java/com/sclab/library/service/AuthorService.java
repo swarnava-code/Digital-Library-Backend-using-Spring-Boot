@@ -1,10 +1,12 @@
 package com.sclab.library.service;
 
 import com.sclab.library.entity.Author;
-import com.sclab.library.util.CustomMessage;
 import com.sclab.library.repository.AuthorRepository;
 import com.sclab.library.util.CustomResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.Optional;
 
 @Service
 public class AuthorService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
 
     @Autowired
     AuthorRepository authorRepository;
@@ -21,18 +24,15 @@ public class AuthorService {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorResp);
     }
 
-    public ResponseEntity getAuthorById(String id) {
+    @Cacheable(cacheNames = "authors", key="#id")
+    public Author getCachedAuthor(String id) {
+        logger.info("fetching author from db");
         Optional<Author> author = authorRepository.findById(id);
-        if(author.isEmpty()){
-            CustomMessage customMessage = new CustomMessage();
-            return CustomResponseEntity.NOT_FOUND(
-                    "authorId", id,
-                    "message", "not found",
-                    "httpCode", HttpStatus.NOT_FOUND.value(),
-                    "entity", Author.class.getName()
-            );
+        if (author.isPresent()) {
+            return author.get();
+        } else {
+            return new Author();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(author);
     }
 
     public ResponseEntity update(String id, Author author) {
