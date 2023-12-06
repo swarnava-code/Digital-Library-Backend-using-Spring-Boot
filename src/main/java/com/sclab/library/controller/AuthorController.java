@@ -21,7 +21,7 @@ public class AuthorController {
 
     @GetMapping("/author/{authorId}")
     public Object get(@PathVariable String authorId) {
-        Author author = authorService.getCachedAuthor(authorId);
+        Author author = authorService.getAuthor(authorId);
         if (author.getId() == null) {
             return CustomResponseEntity.NOT_FOUND(
                     "authorId", authorId,
@@ -36,7 +36,12 @@ public class AuthorController {
     @PutMapping("/author/{id}")
     public ResponseEntity update(@PathVariable String id,
                                  @RequestBody Author author) {
-        return authorService.update(id, author);
+        Author updatedAuthor = authorService.update(id, author);
+        if(updatedAuthor.getId()==null){
+            return CustomResponseEntity.NOT_FOUND();
+        }
+        return CustomResponseEntity.CUSTOM_MSG(200, updatedAuthor);
+
     }
 
     @DeleteMapping("/author/{id}")
