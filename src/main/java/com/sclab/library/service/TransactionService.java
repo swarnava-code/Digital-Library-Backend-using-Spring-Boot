@@ -93,7 +93,7 @@ public class TransactionService {
         return ResponseEntity.status(HttpStatus.OK).body(dto);
     }
 
-    private String getAuthorsName(Book book){
+    private String getAuthorsName(Book book) {
         StringBuilder authors = new StringBuilder();
         for (Author author : book.getAuthors()) {
             authors.append(author.getName() + ", ");
@@ -220,12 +220,24 @@ public class TransactionService {
         return optTransaction.get();
     }
 
-    public List<Transaction> getBooksBetweenDates(Date startDate, Date endDate){
+    public List<Transaction> getBooksBetweenDates(Date startDate, Date endDate) {
         return transactionRepository.findByTransactionDateBetween(startDate, endDate);
     }
 
-    public List<Transaction> getBooksBetweenDatesWithStatus(Date startDate, Date endDate, TransactionStatus status){
+    public List<Transaction> getBooksBetweenDatesWithStatus(Date startDate, Date endDate, TransactionStatus status) {
         return transactionRepository.findByTransactionDateBetweenAndStatusEquals(startDate, endDate, status);
+    }
+
+    public double getTotalCollectedFine(Date startDate, Date endDate) {
+        List<Transaction> transactions = transactionRepository.findByUpdatedOnBetweenAndStatusEquals(startDate, endDate,
+                TransactionStatus.RETURNED);
+        double sum = 0;
+        for (Transaction transaction : transactions) {
+            if (transaction.getStatus().equals(TransactionStatus.RETURNED)) {
+                sum += transaction.getFineAmount();
+            }
+        }
+        return sum;
     }
 
 }

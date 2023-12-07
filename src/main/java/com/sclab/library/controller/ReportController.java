@@ -2,9 +2,8 @@ package com.sclab.library.controller;
 
 import com.sclab.library.entity.Transaction;
 import com.sclab.library.enumeration.TransactionStatus;
-import com.sclab.library.service.CardService;
-import com.sclab.library.service.StudentService;
 import com.sclab.library.service.TransactionService;
+import com.sclab.library.util.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +18,9 @@ import java.util.List;
 public class ReportController {
 
     @Autowired
-    StudentService studentService;
-
-    @Autowired
-    CardService cardService;
-
-    @Autowired
     TransactionService transactionService;
 
-    @GetMapping("/report/booksIssued")
+    @GetMapping("/report/transaction")
     public ResponseEntity getBooksIssuedBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -42,6 +35,19 @@ public class ReportController {
             transactions = transactionService.getBooksBetweenDates(startSqlDate, endSqlDate);
         }
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/report/totalFine")
+    public ResponseEntity getTotalCollectedFineBetweenDates(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+    ) {
+        Date startSqlDate = Date.valueOf(startDate);
+        Date endSqlDate = Date.valueOf(endDate);
+        double fineAmount = transactionService.getTotalCollectedFine(startSqlDate, endSqlDate);
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap("fineAmount", fineAmount)
+        );
     }
 
 }
