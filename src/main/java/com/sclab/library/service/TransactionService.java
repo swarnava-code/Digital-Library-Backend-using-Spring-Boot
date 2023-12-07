@@ -17,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
@@ -220,4 +219,13 @@ public class TransactionService {
         Optional<Transaction> optTransaction = transactionRepository.findById(id);
         return optTransaction.get();
     }
+
+    public List<Transaction> getBooksBetweenDates(Date startDate, Date endDate){
+        return transactionRepository.findByTransactionDateBetween(startDate, endDate);
+    }
+
+    public List<Transaction> getBooksBetweenDatesWithStatus(Date startDate, Date endDate, TransactionStatus status){
+        return transactionRepository.findByTransactionDateBetweenAndStatusEquals(startDate, endDate, status);
+    }
+
 }
