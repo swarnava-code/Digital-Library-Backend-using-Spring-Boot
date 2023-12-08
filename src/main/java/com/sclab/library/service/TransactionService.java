@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TransactionService {
@@ -142,7 +143,7 @@ public class TransactionService {
                 transaction.setIssued(false);
                 transaction.setUpdatedOn(currentDate);
                 transaction.setStatus(TransactionStatus.RETURNED);
-                transaction.setCard(null);
+//                transaction.setCard(null); // we should hava card data since if any student tear the pages of the book
                 int fineAmount = calculateFine(transaction.getBookDueDate());
                 transaction.setFineAmount(transaction.getFineAmount() + fineAmount);
                 // With @Transactional, don't need to call save()
@@ -238,6 +239,10 @@ public class TransactionService {
             }
         }
         return sum;
+    }
+
+    public Set<String> getTotalStudentsSignedUps(Date date) {
+        return transactionRepository.findDistinctCardIdByTransactionDate(date);
     }
 
 }

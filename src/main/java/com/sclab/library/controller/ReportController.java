@@ -37,7 +37,7 @@ public class ReportController {
         return ResponseEntity.ok(transactions);
     }
 
-    @GetMapping("/report/totalFine")
+    @GetMapping("/report/totalFineCollected")
     public ResponseEntity getTotalCollectedFineBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
@@ -47,6 +47,20 @@ public class ReportController {
         double fineAmount = transactionService.getTotalCollectedFine(startSqlDate, endSqlDate);
         return ResponseEntity.ok(
                 CustomResponseEntity.keyValuePairsToMap("fineAmount", fineAmount)
+        );
+    }
+
+    @GetMapping("/report/totalStudentsSignedUp")
+    public ResponseEntity getTotalStudentsSignedUps(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate signedUpDate
+    ) {
+        Date sqlDate = Date.valueOf(signedUpDate);
+        var signedUpsCardsId = transactionService.getTotalStudentsSignedUps(sqlDate);;
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap(
+                        "totalStudentsSignedUps", signedUpsCardsId.size(),
+                        "signedUpsCardsId", signedUpsCardsId
+                )
         );
     }
 
