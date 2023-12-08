@@ -34,7 +34,12 @@ public class ReportController {
         } else {
             transactions = transactionService.getBooksBetweenDates(startSqlDate, endSqlDate);
         }
-        return ResponseEntity.ok(transactions);
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap(
+                        "size", transactions.size(),
+                        "transactions", transactions
+                )
+        );
     }
 
     @GetMapping("/report/totalFineCollected")
