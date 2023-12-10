@@ -127,7 +127,6 @@ public class TransactionService {
             boolean isBookReturned = transaction.isReturned();
             boolean isBookIssued = transaction.isIssued();
             TransactionStatus transactionStatus = transaction.getStatus();
-            Date currentDate = TimeUtil.currentDate();
             if (isCardActive &&
                     !isBookAvailable &&
                     totalIssuedBooks > 0 &&
@@ -137,17 +136,14 @@ public class TransactionService {
                     transactionStatus.equals(TransactionStatus.ISSUED)
             ) {
                 card.setTotalIssuedBook(card.getTotalIssuedBook() - 1);
-                card.setUpdatedOn(currentDate);
                 book.setAvailable(true);
                 transaction.setReturned(true);
                 transaction.setIssued(false);
-                transaction.setUpdatedOn(currentDate);
                 transaction.setStatus(TransactionStatus.RETURNED);
 //                transaction.setCard(null); // we should hava card data since if any student tear the pages of the book
                 int fineAmount = calculateFine(transaction.getBookDueDate());
                 transaction.setFineAmount(transaction.getFineAmount() + fineAmount);
                 // With @Transactional, don't need to call save()
-
                 kafkaProducerService.sendBookReturnedNotification(cardId, book.getName(), getAuthorsName(book),
                         transaction.getCreatedOn().toString(),
                         transaction.getBookDueDate().toString(),

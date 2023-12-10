@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +37,6 @@ public class CardService {
             if (
                     !isStudentHaveCard || isStudentCardExpired
             ) {
-//                Date date = new Date(System.currentTimeMillis());
-//                cardRequest.setCreatedOn(date);
-//                cardRequest.setUpdatedOn(date);
                 cardRequest.setValidUpto(TimeUtil.addYearInDate(1));
                 cardRequest.setEmail(student.getEmail());
                 Card savedCard = cardRepository.save(cardRequest);
