@@ -18,7 +18,10 @@ public class Author implements Serializable {
     private String id;
 
     private String name;
+
+    @Column(unique = true)
     private String email;
+
     private String age;
     private String country;
 

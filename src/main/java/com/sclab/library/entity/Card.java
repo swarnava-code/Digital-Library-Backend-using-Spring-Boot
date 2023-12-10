@@ -2,6 +2,7 @@ package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sclab.library.enumeration.CardStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,8 +21,12 @@ public class Card implements Serializable {
     @UuidGenerator
     private String id;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private CardStatus status;
+
+    @Column(unique = true)
     private String email;
+
     private Date validUpto;
 
     @CreationTimestamp
@@ -36,5 +41,10 @@ public class Card implements Serializable {
     @JsonIgnore
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<Transaction> transactions;
+
+    @PostPersist
+    void setStatus() {
+        status = CardStatus.ACTIVE;
+    }
 
 }

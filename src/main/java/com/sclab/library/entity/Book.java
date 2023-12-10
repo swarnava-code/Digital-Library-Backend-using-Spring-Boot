@@ -1,6 +1,8 @@
 package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sclab.library.enumeration.Genre;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
@@ -22,7 +24,10 @@ public class Book implements Serializable {
     private int numberOfPages;
     private String language;
     private boolean available;
-    private String genre;
+
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
+
     private String isbnNumber;
     private Date publishedDate;
 
@@ -31,6 +36,7 @@ public class Book implements Serializable {
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Set<Author> authors;
 
     @OneToMany(mappedBy = "book")
