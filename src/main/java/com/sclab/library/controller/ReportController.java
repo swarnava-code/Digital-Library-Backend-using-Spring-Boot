@@ -2,6 +2,7 @@ package com.sclab.library.controller;
 
 import com.sclab.library.entity.Transaction;
 import com.sclab.library.enumeration.TransactionStatus;
+import com.sclab.library.service.StudentService;
 import com.sclab.library.service.TransactionService;
 import com.sclab.library.util.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ReportController {
 
     @Autowired
     TransactionService transactionService;
+
+    @Autowired
+    StudentService studentService;
 
     @GetMapping("/report/transaction")
     public ResponseEntity getBooksIssuedBetweenDates(
@@ -65,6 +69,18 @@ public class ReportController {
                 CustomResponseEntity.keyValuePairsToMap(
                         "totalStudentsSignedUps", signedUpsCardsId.size(),
                         "signedUpsCardsId", signedUpsCardsId
+                )
+        );
+    }
+
+    @GetMapping("/report/activeStudents")
+    public ResponseEntity getActiveStudents(
+    ) {
+        var activeStudents = studentService.findActiveStudent();;
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap(
+                        "size", activeStudents.size(),
+                        "activeStudents", activeStudents
                 )
         );
     }

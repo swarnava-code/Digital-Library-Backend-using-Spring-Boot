@@ -73,7 +73,6 @@ public class CardService {
 
     public ResponseEntity getAllCards() {
         List<Card> cards = cardRepository.findAll();
-        System.out.println("cards size = " + cards.size());
         return ResponseEntity.status(HttpStatus.OK).body(cards);
     }
 
