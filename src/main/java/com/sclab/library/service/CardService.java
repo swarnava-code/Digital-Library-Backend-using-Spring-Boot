@@ -38,9 +38,9 @@ public class CardService {
             if (
                     !isStudentHaveCard || isStudentCardExpired
             ) {
-                Date date = new Date(System.currentTimeMillis());
-                cardRequest.setCreatedOn(date);
-                cardRequest.setUpdatedOn(date);
+//                Date date = new Date(System.currentTimeMillis());
+//                cardRequest.setCreatedOn(date);
+//                cardRequest.setUpdatedOn(date);
                 cardRequest.setValidUpto(TimeUtil.addYearInDate(1));
                 cardRequest.setEmail(student.getEmail());
                 Card savedCard = cardRepository.save(cardRequest);

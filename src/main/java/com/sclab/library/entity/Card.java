@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.sql.Date;
@@ -21,8 +23,13 @@ public class Card implements Serializable {
     private String status;
     private String email;
     private Date validUpto;
+
+    @CreationTimestamp
     private Date createdOn;
+
+    @UpdateTimestamp
     private Date updatedOn;
+
     private int totalIssuedBook;
 
     @OneToMany(mappedBy = "card")

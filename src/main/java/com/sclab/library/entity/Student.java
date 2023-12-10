@@ -6,6 +6,8 @@ import com.sclab.library.util.TimeUtil;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import java.sql.Date;
 import java.util.Objects;
@@ -27,9 +29,11 @@ public class Student {
     private String phoneNumber;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @CreationTimestamp
     private Date createdOn;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @UpdateTimestamp
     private Date updatedOn;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -49,17 +53,6 @@ public class Student {
         this.email = Objects.requireNonNullElse(newStudent.email, this.email);
         this.phoneNumber = Objects.requireNonNullElse(newStudent.phoneNumber, this.phoneNumber);
         return this;
-    }
-
-    @PrePersist
-    protected void onCreate(){
-        createdOn = TimeUtil.currentDate();
-        updatedOn = createdOn;
-    }
-
-    @PreUpdate
-    protected void onUpdate(){
-        updatedOn = TimeUtil.currentDate();
     }
 
 }

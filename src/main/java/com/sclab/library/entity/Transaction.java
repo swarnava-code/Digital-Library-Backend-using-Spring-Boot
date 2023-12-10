@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sclab.library.enumeration.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import java.sql.Date;
 
@@ -23,7 +25,11 @@ public class Transaction {
     private double fineAmount;
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
+
+    @CreationTimestamp
     private Date createdOn;
+
+    @UpdateTimestamp
     private Date updatedOn;
 
     @ManyToOne
