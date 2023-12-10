@@ -9,17 +9,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/author")
 public class AuthorController {
 
     @Autowired
     AuthorService authorService;
 
-    @PostMapping("/author")
+    @PostMapping
     public ResponseEntity create(@RequestBody Author author) {
         return authorService.createAuthor(author);
     }
 
-    @GetMapping("/author/{authorId}")
+    @GetMapping("/{authorId}")
     public Object get(@PathVariable String authorId) {
         Author author = authorService.getAuthor(authorId);
         if (author.getId() == null) {
@@ -33,7 +34,7 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.OK).body(author);
     }
 
-    @PutMapping("/author/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable String id,
                                  @RequestBody Author author) {
         Author updatedAuthor = authorService.update(id, author);
@@ -44,7 +45,7 @@ public class AuthorController {
 
     }
 
-    @DeleteMapping("/author/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable String id) {
         return authorService.delete(id);
     }

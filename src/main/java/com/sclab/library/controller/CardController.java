@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/card")
 public class CardController {
 
     @Autowired
     CardService cardService;
 
-    @PostMapping("/card/{studentId}")
+    @PostMapping("/{studentId}")
     public ResponseEntity issueCard(
             @RequestBody Card card,
             @PathVariable String studentId
@@ -22,12 +23,12 @@ public class CardController {
         return cardService.createCard(card, studentId);
     }
 
-    @GetMapping("/card")
+    @GetMapping
     public ResponseEntity<List<Card>> getAllCard() {
         return cardService.getAllCards();
     }
 
-    @GetMapping("/card/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Book> getSingleCard(@PathVariable String id) {
         return cardService.getById(id);
     }

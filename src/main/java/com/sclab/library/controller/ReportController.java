@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.sql.Date;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
+@RequestMapping("/report")
 public class ReportController {
 
     @Autowired
@@ -24,7 +26,7 @@ public class ReportController {
     @Autowired
     StudentService studentService;
 
-    @GetMapping("/report/transaction")
+    @GetMapping("/transaction")
     public ResponseEntity getBooksIssuedBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -46,7 +48,7 @@ public class ReportController {
         );
     }
 
-    @GetMapping("/report/totalFineCollected")
+    @GetMapping("/totalFineCollected")
     public ResponseEntity getTotalCollectedFineBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
@@ -59,7 +61,7 @@ public class ReportController {
         );
     }
 
-    @GetMapping("/report/totalStudentsSignedUp")
+    @GetMapping("/totalStudentsSignedUp")
     public ResponseEntity getTotalStudentsSignedUps(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate signedUpDate
     ) {
@@ -73,7 +75,7 @@ public class ReportController {
         );
     }
 
-    @GetMapping("/report/activeStudents")
+    @GetMapping("/activeStudents")
     public ResponseEntity getActiveStudents(
     ) {
         var activeStudents = studentService.findActiveStudent();;

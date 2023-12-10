@@ -7,29 +7,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/student")
 public class StudentController {
 
     @Autowired
     private StudentService studentService;
 
-    @PostMapping("/student")
+    @PostMapping
     public ResponseEntity createStudent(@RequestBody Student student){
         return studentService.create(student);
     }
 
-    @GetMapping("/student/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity retrieveStudent(@PathVariable String id){
         return studentService.retrieve(id);
     }
 
-    @PutMapping("/student/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity updateStudent(@PathVariable String id,
                                         @RequestBody Student student){
         return studentService.update(id, student);
     }
 
-    @DeleteMapping("/student/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity deleteStudent(@PathVariable String id){
         return studentService.delete(id);
     }
+
 }
