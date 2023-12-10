@@ -3,7 +3,6 @@ package com.sclab.library.service;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Student;
 import com.sclab.library.repository.StudentRepository;
-import com.sclab.library.util.CustomMessage;
 import com.sclab.library.repository.CardRepository;
 import com.sclab.library.util.CustomResponseEntity;
 import com.sclab.library.util.TimeUtil;
@@ -56,15 +55,12 @@ public class CardService {
         return CustomResponseEntity.NOT_FOUND("student not found");
     }
 
-    public ResponseEntity getById(String id) {
+    public Card getById(String id) {
         Optional<Card> card = cardRepository.findById(id);
         if (card.isEmpty()) {
-            CustomMessage customMessage = new CustomMessage();
-            customMessage.setMessage("Not found with this id: " + id);
-            customMessage.setStatusCode(404);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(customMessage);
+            return new Card();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(card);
+        return card.get();
     }
 
     public ResponseEntity getAllCards() {
