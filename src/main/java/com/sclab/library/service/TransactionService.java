@@ -5,6 +5,7 @@ import com.sclab.library.entity.Author;
 import com.sclab.library.entity.Book;
 import com.sclab.library.entity.Card;
 import com.sclab.library.entity.Transaction;
+import com.sclab.library.enumeration.CardStatus;
 import com.sclab.library.enumeration.TransactionStatus;
 import com.sclab.library.repository.BookRepository;
 import com.sclab.library.repository.CardRepository;
@@ -13,6 +14,7 @@ import com.sclab.library.util.CustomMessage;
 import com.sclab.library.util.CustomResponseEntity;
 import com.sclab.library.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -37,9 +39,11 @@ public class TransactionService {
     @Autowired
     private KafkaProducerService kafkaProducerService;
 
-    private final String ACTIVE = "Active";
-    private final int MAX_ISSUE_ALLOWED = 3;
-    private final int TOTAL_BORROW_DAYS = 14;
+    @Value("${transact.max_issue_allowed}")
+    private int maxIssueAllowed;
+
+    @Value("${transact.total_borrow_days}")
+    private int totalBorrowDays;
 
     public ResponseEntity issueBook(String cardId, String bookId) {
         Optional<Card> optCard = cardRepository.findById(cardId);
@@ -51,17 +55,17 @@ public class TransactionService {
             card = optCard.get();
             book = optBook.get();
             Date currentDate = new Date(System.currentTimeMillis());
-            boolean isCardActive = card.getStatus().equals(ACTIVE);
+            boolean isCardActive = card.getStatus().equals(CardStatus.ACTIVE);
             boolean isBookAvailable = book.isAvailable();
             int countOfIssue = card.getTotalIssuedBook();
-            if (isBookAvailable && isCardActive && countOfIssue < MAX_ISSUE_ALLOWED) {
+            if (isBookAvailable && isCardActive && countOfIssue < maxIssueAllowed) {
                 Transaction transaction = new Transaction();
                 transaction.setCard(optCard.get());
                 transaction.setBook(optBook.get());
                 transaction.setTransactionDate(currentDate);
                 transaction.setCreatedOn(currentDate);
                 transaction.setUpdatedOn(currentDate);
-                transaction.setBookDueDate(TimeUtil.addDayInDate(TOTAL_BORROW_DAYS));//calculateDueDate()
+                transaction.setBookDueDate(TimeUtil.addDayInDate(totalBorrowDays));//calculateDueDate()
                 transaction.setIssued(true);
                 transaction.setStatus(TransactionStatus.ISSUED);
                 savedTransaction = transactionRepository.save(transaction);
@@ -121,26 +125,23 @@ public class TransactionService {
             Card card = optCard.get();
             List<Transaction> transactions = transactionRepository.findByCardIdAndBookIdAndStatusEquals(cardId, bookId, TransactionStatus.ISSUED);
             Transaction transaction = transactions.get(0);
-            boolean isCardActive = card.getStatus().equals(ACTIVE);
+            boolean isCardActive = card.getStatus().equals(CardStatus.ACTIVE);
             boolean isBookAvailable = book.isAvailable();
             int totalIssuedBooks = card.getTotalIssuedBook();
             boolean isBookReturned = transaction.isReturned();
             boolean isBookIssued = transaction.isIssued();
             TransactionStatus transactionStatus = transaction.getStatus();
-            if (isCardActive &&
-                    !isBookAvailable &&
-                    totalIssuedBooks > 0 &&
-                    totalIssuedBooks <= 3 &&
-                    !isBookReturned &&
-                    isBookIssued &&
-                    transactionStatus.equals(TransactionStatus.ISSUED)
-            ) {
+            boolean isAllCondSatisfied = isCardActive && !isBookAvailable &&
+                    totalIssuedBooks > 0 && totalIssuedBooks <= 3 &&
+                    !isBookReturned && isBookIssued &&
+                    transactionStatus.equals(TransactionStatus.ISSUED);
+            if (isAllCondSatisfied) {
                 card.setTotalIssuedBook(card.getTotalIssuedBook() - 1);
                 book.setAvailable(true);
                 transaction.setReturned(true);
                 transaction.setIssued(false);
                 transaction.setStatus(TransactionStatus.RETURNED);
-//                transaction.setCard(null); // we should hava card data since if any student tear the pages of the book
+                // transaction.setCard(null); // we should hava card data since if any student tear the pages of the book
                 int fineAmount = calculateFine(transaction.getBookDueDate());
                 transaction.setFineAmount(transaction.getFineAmount() + fineAmount);
                 // With @Transactional, don't need to call save()
@@ -149,7 +150,6 @@ public class TransactionService {
                         transaction.getBookDueDate().toString(),
                         transaction.getFineAmount()
                 );
-
                 return CustomResponseEntity.CUSTOM_MSG_OK(200,
                         "fineAmount", fineAmount,
                         "book", book,

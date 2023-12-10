@@ -25,7 +25,10 @@ public class Student {
     private int age;
     private String name;
     private String country;
+
+    @Column(unique = true)
     private String email;
+
     private String phoneNumber;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
