@@ -23,6 +23,7 @@ public class Transaction {
     private boolean isIssued;
     private boolean isReturned;
     private double fineAmount;
+
     @Enumerated(EnumType.STRING)
     private TransactionStatus status;
 

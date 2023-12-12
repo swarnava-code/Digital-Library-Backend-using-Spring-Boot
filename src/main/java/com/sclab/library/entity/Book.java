@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sclab.library.enumeration.Genre;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
@@ -20,15 +21,28 @@ public class Book implements Serializable {
     @UuidGenerator
     private String id;
 
+    @Pattern(regexp = "^[a-zA-Z\\s]+$")
+    @Size(min = 2, max = 50)
+    @NotNull
+    @NotBlank
     private String name;
+
+    @Min(1)
     private int numberOfPages;
+
+    @Pattern(regexp = "^[a-zA-Z\\s]+$")
+    @Size(min = 2, max = 25)
+    @NotBlank
     private String language;
+
     private boolean available;
 
     @Enumerated(EnumType.STRING)
     private Genre genre;
 
+    @Pattern(regexp = "^\\d{13}$")
     private String isbnNumber;
+
     private Date publishedDate;
 
     @ManyToMany

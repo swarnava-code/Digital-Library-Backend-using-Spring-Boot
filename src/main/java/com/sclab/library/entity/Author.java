@@ -2,6 +2,7 @@ package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
@@ -17,12 +18,23 @@ public class Author implements Serializable {
     @UuidGenerator
     private String id;
 
+    @Pattern(regexp = "^[a-zA-Z\\s]+$")
+    @Size(min = 2, max = 35)
+    @NotNull
+    @NotBlank
     private String name;
 
     @Column(unique = true)
+    @NotNull
+    @Email
     private String email;
 
+    @Min(value = 1, message = "Zero or negative value is not possible")
+    @Max(value = 123, message = "122 years and 164 days is the longest documented and verified human lifespan")
     private String age;
+
+    @Pattern(regexp = "^[a-zA-Z\\s]+$")
+    @Size(min = 3, max = 35)
     private String country;
 
     @OneToMany(mappedBy = "author")

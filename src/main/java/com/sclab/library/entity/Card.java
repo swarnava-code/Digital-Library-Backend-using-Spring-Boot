@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sclab.library.enumeration.CardStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -25,6 +26,9 @@ public class Card implements Serializable {
     private CardStatus status;
 
     @Column(unique = true)
+    @Email
+    @NotBlank
+    @NotNull
     private String email;
 
     private Date validUpto;
@@ -35,6 +39,8 @@ public class Card implements Serializable {
     @UpdateTimestamp
     private Date updatedOn;
 
+    @Min(0)
+    @Max(3)
     private int totalIssuedBook;
 
     @OneToMany(mappedBy = "card")

@@ -2,8 +2,9 @@ package com.sclab.library.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.sclab.library.util.TimeUtil;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +28,8 @@ public class Student {
     private String country;
 
     @Column(unique = true)
+    @Email
+    @NotBlank
     private String email;
 
     private String phoneNumber;
