@@ -3,7 +3,7 @@ package com.sclab.library.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +12,9 @@ import java.util.Objects;
 @Entity
 @Table
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Author implements Serializable {
 
     @Id
@@ -31,7 +34,7 @@ public class Author implements Serializable {
 
     @Min(value = 1, message = "Zero or negative value is not possible")
     @Max(value = 123, message = "122 years and 164 days is the longest documented and verified human lifespan")
-    private String age;
+    private int age;
 
     @Pattern(regexp = "^[a-zA-Z\\s]+$")
     @Size(min = 3, max = 35)
@@ -39,10 +42,12 @@ public class Author implements Serializable {
 
     @OneToMany(mappedBy = "author")
     @JsonIgnore
+    @Setter(AccessLevel.NONE)
     private List<AuthorBook> authorBooks;
 
     @ManyToMany(mappedBy = "authors", cascade = CascadeType.ALL)
     @JsonIgnore
+    @Setter(AccessLevel.NONE)
     private List<Book> books;
 
     public Author setAuthorOrDefault(Author newAuthor) {

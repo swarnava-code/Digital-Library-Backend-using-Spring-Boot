@@ -37,3 +37,4 @@ Run [SpringBootLibraryApplication.java](src/main/java/com/sclab/library/SpringBo
  - [Spring Docs](https://spring.io/guides)
  - [JPA query-methods-details](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html)
  - [JPA query-methods](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
+ - [Test Sample Code](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito)
