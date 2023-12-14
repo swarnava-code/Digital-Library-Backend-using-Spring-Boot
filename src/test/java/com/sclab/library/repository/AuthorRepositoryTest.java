@@ -1,8 +1,7 @@
 package com.sclab.library.repository;
 
+import com.sclab.library.StubProvider;
 import com.sclab.library.entity.Author;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,27 +16,11 @@ public class AuthorRepositoryTest {
     @Autowired
     private AuthorRepository authorRepository;
 
-    static Author authorStub;
+    private final StubProvider stubProvider = new StubProvider();
 
-    static Author authorStub2;
+    private final Author authorStub = stubProvider.getAuthorStub();
 
-    @BeforeAll
-    public static void setUpStub() {
-        authorStub = Author.builder()
-                .id("9428c769-185a-4c6e-b890-ae884b823945")
-                .name("Swarnava Chakraborty")
-                .email("swarnava.code@gmail.com")
-                .age(26)
-                .country("India")
-                .build();
-        authorStub2 = Author.builder()
-                .id("9428c769-185a-4c6e-b890-ae884b777945")
-                .name("Swetank Raj")
-                .email("iamswetank@gmail.com")
-                .age(26)
-                .country("India")
-                .build();
-    }
+    private final Author authorStub2 = stubProvider.getAuthorStub2();
 
     @Test
     public void testFindById__whenIdIsValid() {
@@ -72,12 +55,6 @@ public class AuthorRepositoryTest {
         var actualAuthors = authorRepository.findAll();
         assertEquals(expectedAuthorsStub.size(), actualAuthors.size());
         assertEquals(expectedAuthorsStub, actualAuthors);
-    }
-
-    @AfterAll
-    public static void tearDown() {
-        authorStub = null;
-        authorStub2 = null;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.sclab.library.service;
 
+import com.sclab.library.StubProvider;
 import com.sclab.library.entity.Author;
 import com.sclab.library.repository.AuthorRepository;
 import org.junit.jupiter.api.Test;
@@ -22,34 +23,26 @@ public class AuthorServiceTest {
     @InjectMocks
     private AuthorService authorService;
 
-    Author authorStub = Author.builder()
-            .id("9428c769-185a-4c6e-b890-ae884b823945")
-            .name("Swarnava Chakraborty")
-            .email("swarnava.code@gmail.com")
-            .age(26)
-            .country("India")
-            .build();
+    private final StubProvider stubProvider = new StubProvider();
 
-    Author authorStub2 = Author.builder()
-            .id("9428c769-185a-4c6e-b890-ae884b777945")
-                .name("Swetank Raj")
-                .email("iamswetank@gmail.com")
-                .age(26)
-                .country("India")
-                .build();
+    private final Author authorStub = stubProvider.getAuthorStub();
 
     @Test
     public void testGetAuthor() {
-        // mocking repo which will call by service indirectly
+
+        // mocking repo which will call by service method
         Mockito.when(authorRepository.findById(authorStub.getId())).thenReturn(Optional.ofNullable(authorStub));
-        // act
+
+        // act (calling service method)
         var author = authorService.getAuthor(authorStub.getId());
         System.out.println(String.format("expected: %s,\nactual: %s", authorStub, author));
-        // assertion
+
+        // assertion (assert all data)
         assertEquals(authorStub, author);
-        // verify that authorService should access authorRepo,
-        // and check if it call or not to findById() with particular id 1 time
-        // if not it will show how service used repo
+
+        // verify uses
+        // verify -> (1) authorService should access authorRepo one time, (2) called findById() with specific id
+        // if not it will fail and print result
         verify(authorRepository, times(1)).findById(authorStub.getId());
     }
 
