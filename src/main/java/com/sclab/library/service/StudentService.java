@@ -61,4 +61,8 @@ public class StudentService {
         return studentRepository.findStudentsByCardStatus(cardStatus);
     }
 
+    public List<Student> findStudentsByTotalIssuedBook(int totalIssuedBook){
+        return studentRepository.findStudentsByTotalIssuedBook(totalIssuedBook);
+    }
+
 }

@@ -14,4 +14,7 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     @Query("SELECT s FROM Student s JOIN FETCH s.card c WHERE c.status = :status")
     List<Student> findStudentsByCardStatus(@Param("status") CardStatus status);
 
+    @Query("SELECT s FROM Student s JOIN FETCH s.card c WHERE c.totalIssuedBook = :totalIssuedBook")
+    List<Student> findStudentsByTotalIssuedBook(@Param("totalIssuedBook") int totalIssuedBook);
+
 }

@@ -8,6 +8,7 @@ import com.sclab.library.service.TransactionService;
 import com.sclab.library.util.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,7 +68,8 @@ public class ReportController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate signedUpDate
     ) {
         Date sqlDate = Date.valueOf(signedUpDate);
-        var signedUpsCardsId = transactionService.getTotalStudentsSignedUps(sqlDate);;
+        var signedUpsCardsId = transactionService.getTotalStudentsSignedUps(sqlDate);
+        ;
         return ResponseEntity.ok(
                 CustomResponseEntity.keyValuePairsToMap(
                         "totalStudentsSignedUps", signedUpsCardsId.size(),
@@ -76,10 +78,22 @@ public class ReportController {
         );
     }
 
-    @GetMapping("/activeStudents")
-    public ResponseEntity getActiveStudents(
-    ) {
-        var activeStudents = studentService.findStudentsByCardStatus(CardStatus.ACTIVE);;
+    @GetMapping("/findStudentsByCardStatus")
+    public ResponseEntity findStudentsByCardStatus(@RequestParam String cardStatus) {
+        CardStatus cardStatus1 = CardStatus.ACTIVE;
+        if (cardStatus.equalsIgnoreCase("Active")) {
+            cardStatus1 = CardStatus.ACTIVE;
+        } else if (cardStatus.equalsIgnoreCase(CardStatus.EXPIRED.name())) {
+            cardStatus1 = CardStatus.EXPIRED;
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    CustomResponseEntity.keyValuePairsToMap(
+                            "error", String.format("invalid cardStatus '%s'", cardStatus),
+                            "acceptedValues", CardStatus.values()
+                    )
+            );
+        }
+        var activeStudents = studentService.findStudentsByCardStatus(cardStatus1);
         return ResponseEntity.ok(
                 CustomResponseEntity.keyValuePairsToMap(
                         "size", activeStudents.size(),
@@ -88,14 +102,13 @@ public class ReportController {
         );
     }
 
-    @GetMapping("/inactiveStudents")
-    public ResponseEntity getExpiredStudents(
-    ) {
-        var activeStudents = studentService.findStudentsByCardStatus(CardStatus.EXPIRED);;
+    @GetMapping("/findStudentsByTotalIssuedBook")
+    public ResponseEntity findStudentsByTotalIssuedBook(@RequestParam int totalIssuedBook) {
+        var students = studentService.findStudentsByTotalIssuedBook(totalIssuedBook);
         return ResponseEntity.ok(
                 CustomResponseEntity.keyValuePairsToMap(
-                        "size", activeStudents.size(),
-                        "activeStudents", activeStudents
+                        "size", students.size(),
+                        "students", students
                 )
         );
     }
