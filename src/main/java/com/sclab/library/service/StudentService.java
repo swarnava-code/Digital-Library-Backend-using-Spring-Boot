@@ -1,6 +1,7 @@
 package com.sclab.library.service;
 
 import com.sclab.library.entity.Student;
+import com.sclab.library.enumeration.CardStatus;
 import com.sclab.library.repository.StudentRepository;
 import com.sclab.library.util.CustomResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,8 +57,8 @@ public class StudentService {
         return CustomResponseEntity.NOT_FOUND("student not found");
     }
 
-    public List<Student> findActiveStudent() {
-        return studentRepository.findActiveStudentsWithCard() ;
+    public List<Student> findStudentsByCardStatus(CardStatus cardStatus) {
+        return studentRepository.findStudentsByCardStatus(cardStatus);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.sclab.library.controller;
 
 import com.sclab.library.entity.Transaction;
+import com.sclab.library.enumeration.CardStatus;
 import com.sclab.library.enumeration.TransactionStatus;
 import com.sclab.library.service.StudentService;
 import com.sclab.library.service.TransactionService;
@@ -78,7 +79,19 @@ public class ReportController {
     @GetMapping("/activeStudents")
     public ResponseEntity getActiveStudents(
     ) {
-        var activeStudents = studentService.findActiveStudent();;
+        var activeStudents = studentService.findStudentsByCardStatus(CardStatus.ACTIVE);;
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap(
+                        "size", activeStudents.size(),
+                        "activeStudents", activeStudents
+                )
+        );
+    }
+
+    @GetMapping("/inactiveStudents")
+    public ResponseEntity getExpiredStudents(
+    ) {
+        var activeStudents = studentService.findStudentsByCardStatus(CardStatus.EXPIRED);;
         return ResponseEntity.ok(
                 CustomResponseEntity.keyValuePairsToMap(
                         "size", activeStudents.size(),
