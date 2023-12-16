@@ -6,6 +6,8 @@ import com.sclab.library.enumeration.TransactionStatus;
 import com.sclab.library.service.StudentService;
 import com.sclab.library.service.TransactionService;
 import com.sclab.library.util.CustomResponseEntity;
+import com.sclab.library.util.RegexUtil;
+import com.sclab.library.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -15,12 +17,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.sql.Date;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/report")
 public class ReportController {
+    private static final String VALID_DATE_PATTERN = "yyyy-MM-dd";
+    private static final Set<String> EXP_CURR_DATE_STR = Set.of("today", "now", "current_date");
+    private static final String VALID_DATE_REGEX_PATTERN = "\\d{4}-\\d{2}-\\d{2}";
 
     @Autowired
     TransactionService transactionService;
@@ -109,6 +116,38 @@ public class ReportController {
                 CustomResponseEntity.keyValuePairsToMap(
                         "size", students.size(),
                         "students", students
+                )
+        );
+    }
+
+    @GetMapping("/findByBookDueDate")
+    public ResponseEntity findByBookDueDate(
+            @RequestParam
+            String date
+    ) {
+        Date date1 = TimeUtil.currentDate();
+        boolean isPatternMatches = RegexUtil.isPatternMatches(date, EXP_CURR_DATE_STR, VALID_DATE_REGEX_PATTERN);
+        if (!isPatternMatches) {
+            return ResponseEntity.ok(
+                    CustomResponseEntity.keyValuePairsToMap(
+                            "invalidDate", date,
+                            "validDatePattern", VALID_DATE_PATTERN,
+                            "alternativeValues", EXP_CURR_DATE_STR
+                    )
+            );
+        }
+        if (!EXP_CURR_DATE_STR.contains(date.toLowerCase())) {
+            try {
+                date1 = (Date) TimeUtil.dateInSimpleFormat(date, VALID_DATE_PATTERN);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        var transactions = transactionService.findByBookDueDate(date1);
+        return ResponseEntity.ok(
+                CustomResponseEntity.keyValuePairsToMap(
+                        "size", transactions.size(),
+                        "transactions", transactions
                 )
         );
     }

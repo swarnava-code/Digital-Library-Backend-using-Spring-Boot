@@ -241,4 +241,8 @@ public class TransactionService {
         return transactionRepository.findDistinctCardIdByTransactionDate(date);
     }
 
+    public Set<Transaction> findByBookDueDate(Date date) {
+        return transactionRepository.findByBookDueDate(date);
+    }
+
 }

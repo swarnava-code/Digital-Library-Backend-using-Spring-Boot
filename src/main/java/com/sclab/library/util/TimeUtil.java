@@ -2,6 +2,8 @@ package com.sclab.library.util;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 
 public class TimeUtil {
@@ -10,7 +12,7 @@ public class TimeUtil {
         return plusDay(0);
     }
 
-    public static Timestamp currentTimeStamp(){
+    public static Timestamp currentTimeStamp() {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
         return timestamp;
     }
@@ -54,9 +56,13 @@ public class TimeUtil {
         long days = ChronoUnit.DAYS.between(date1.toLocalDate(), date2.toLocalDate());
         return days;
     }
-}
 
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.add(calendarUnit, yearAmount);
-//        java.sql.Date sqlDate = new Date(calendar.getTimeInMillis());
-//        return sqlDate;
+    public static java.util.Date dateInSimpleFormat(String dateValue, String datePattern) throws ParseException {
+        java.util.Date date;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
+        date = simpleDateFormat.parse(dateValue);
+        java.sql.Date sqlStartDate = new java.sql.Date(date.getTime());
+        return sqlStartDate;
+    }
+
+}

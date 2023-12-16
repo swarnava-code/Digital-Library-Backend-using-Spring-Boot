@@ -34,4 +34,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, String
             "AND t.status <> 'FAILURE'", nativeQuery = true)
     Set<String> findDistinctCardIdByTransactionDate(@Param("transactionDate") Date transactionDate);
 
+    Set<Transaction> findByBookDueDate(Date bookDueDate);
+
 }
