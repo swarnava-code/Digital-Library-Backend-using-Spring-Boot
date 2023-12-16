@@ -29,6 +29,21 @@ logging.level.org.springframework.kafka.listener=ERROR
 logging.level.org.apache.kafka.clients.NetworkClient=ERROR
 logging.level.org.apache.kafka.clients.consumer.internals.ConsumerCoordinator=ERROR
 logging.level.org.apache.kafka.clients.consumer.ConsumerConfig=ERROR
+
+## Transaction
+transact.max_issue_allowed=2
+transact.total_borrow_days=10
+
+# Gmail SMTP Example
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=s...codejr@gmail.com
+spring.mail.password=xxxx xxxx xxxx xxxx
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# BCC recipients to keep track as ADMIN
+email.bcc=admin.tracking@gmail.com
 ```
 Step-2:<br>
 Run [SpringBootLibraryApplication.java](src/main/java/com/sclab/library/SpringBootLibraryApplication.java) to start app.
