@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpServerErrorException;
+import java.net.ConnectException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,12 +45,24 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UnexpectedTypeException.class)
-    public ResponseEntity<Object> handleAllError(UnexpectedTypeException ute) {
+    public ResponseEntity<Object> handleUnexpectedTypeException(UnexpectedTypeException ute) {
         logger.error(ute.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CustomResponseEntity.keyValuePairsToMap(
                         "message", "invalid validator",
                         "error", ute.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(ConnectException.class)
+    public ResponseEntity<Object> handleConnectException(ConnectException ce){
+        logger.error(ce.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CustomResponseEntity.keyValuePairsToMap(
+                        "message", "connection issue - Verify the availability and proper configuration " +
+                                "of any external services your application depends on. " +
+                                "(e.g., redis, mq, etc)",
+                        "error", ce.getMessage()
                 ));
     }
 

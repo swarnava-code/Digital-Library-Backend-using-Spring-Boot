@@ -36,7 +36,7 @@ public class Author implements Serializable {
     @Max(value = 123, message = "122 years and 164 days is the longest documented and verified human lifespan")
     private int age;
 
-    @Pattern(regexp = "^[a-zA-Z\\s]+$")
+    @Pattern(regexp = "^[a-zA-Z -]+$")
     @Size(min = 3, max = 35)
     private String country;
 
