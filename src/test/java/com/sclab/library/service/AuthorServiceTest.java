@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
@@ -29,21 +31,52 @@ public class AuthorServiceTest {
 
     @Test
     public void testGetAuthor() {
-
-        // mocking repo which will call by service method
-        Mockito.when(authorRepository.findById(authorStub.getId())).thenReturn(Optional.ofNullable(authorStub));
-
-        // act (calling service method)
+        Mockito.when(authorRepository.findById(authorStub.getId()))
+                .thenReturn(Optional.ofNullable(authorStub));
         var author = authorService.getAuthor(authorStub.getId());
         System.out.println(String.format("expected: %s,\nactual: %s", authorStub, author));
+        assertEquals(authorStub, author);
+        verify(authorRepository, times(1)).findById(authorStub.getId());
+    }
 
-        // assertion (assert all data)
+    @Test
+    public void testCreateAuthor() {
+        Mockito.when(authorRepository.save(authorStub))
+                .thenReturn(authorStub);
+        var author = authorService.createAuthor(authorStub);
+        var expected = ResponseEntity.status(HttpStatus.CREATED).body(authorStub);
+        assertEquals(expected, author);
+        verify(authorRepository, times(1)).save(authorStub);
+    }
+
+    @Test
+    public void testUpdateAuthor() {
+        Mockito.when(authorRepository.findById(authorStub.getId()))
+                .thenReturn(Optional.of(authorStub));
+        Mockito.when(authorRepository.save(authorStub))
+                .thenReturn(authorStub);
+
+//        Mockito.when(authorStub.setAuthorOrDefault(authorStub))
+//                .thenReturn(authorStub);
+
+        var author = authorService.update(authorStub.getId(), authorStub);
+
+//        var expected = ResponseEntity.status(HttpStatus.CREATED).body(authorStub);
         assertEquals(authorStub, author);
 
-        // verify uses
-        // verify -> (1) authorService should access authorRepo one time, (2) called findById() with specific id
-        // if not it will fail and print result
         verify(authorRepository, times(1)).findById(authorStub.getId());
+        verify(authorRepository, times(1)).save(authorStub);
+    }
+
+    public Author update(String id, Author author) {
+        var optAuthor = authorRepository.findById(id);
+        if (optAuthor.isPresent()) {
+            Author existingAuthor = optAuthor.get();
+            author.setId(id);
+            Author updatedAuthor = existingAuthor.setAuthorOrDefault(author);
+            return authorRepository.save(updatedAuthor);
+        }
+        return new Author();
     }
 
 }

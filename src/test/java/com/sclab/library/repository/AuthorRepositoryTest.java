@@ -43,7 +43,7 @@ public class AuthorRepositoryTest {
     }
 
     @Test
-    public void testFindAll_whenSize2() {
+    public void testSaveAndFindAllFunctionWhenSizeIs2() {
         List<Author> expectedAuthorsStub = new ArrayList<>();
         authorRepository.save(authorStub);
         authorRepository.save(authorStub2);
@@ -55,6 +55,40 @@ public class AuthorRepositoryTest {
         var actualAuthors = authorRepository.findAll();
         assertEquals(expectedAuthorsStub.size(), actualAuthors.size());
         assertEquals(expectedAuthorsStub, actualAuthors);
+    }
+
+    @Test
+    public void testUpdateFunctionality() {
+        final String JAPAN = "Japan";
+        // save for 1st time
+        final String PREV_COUNTRY = authorStub.getCountry();
+        authorRepository.save(authorStub);
+        // update
+        authorStub.setCountry(JAPAN);
+        authorRepository.save(authorStub);
+        // check updated data
+        final var optUpdatedAuthor = authorRepository.findById(authorStub.getId());
+        assertTrue(optUpdatedAuthor.isPresent());
+        final var updatedAuthor = optUpdatedAuthor.get();
+        final String CURR_COUNTRY = updatedAuthor.getCountry();
+        // assertion
+        assertNotEquals(CURR_COUNTRY, PREV_COUNTRY);
+        assertEquals(CURR_COUNTRY, JAPAN);
+    }
+
+    @Test
+    public void testDeleteFunctionality() {
+        // save for 1st time
+        final String PREV_COUNTRY = authorStub.getCountry();
+        authorRepository.save(authorStub);
+        // verify saved data
+        final var optSavedAuthor = authorRepository.findById(authorStub.getId());
+        assertTrue(optSavedAuthor.isPresent());
+        // delete by id
+        authorRepository.deleteById(authorStub.getId());
+        // verify deleted data
+        final var optDeletedAuthor = authorRepository.findById(authorStub.getId());
+        assertFalse(optDeletedAuthor.isPresent());
     }
 
 }
