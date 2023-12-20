@@ -3,6 +3,8 @@ package com.sclab.library.service;
 import com.sclab.library.StubProvider;
 import com.sclab.library.entity.Author;
 import com.sclab.library.repository.AuthorRepository;
+import com.sclab.library.util.CustomResponseEntity;
+import com.sclab.library.util.JSONUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,8 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthorServiceTest {
@@ -55,28 +56,22 @@ public class AuthorServiceTest {
                 .thenReturn(Optional.of(authorStub));
         Mockito.when(authorRepository.save(authorStub))
                 .thenReturn(authorStub);
-
-//        Mockito.when(authorStub.setAuthorOrDefault(authorStub))
-//                .thenReturn(authorStub);
-
         var author = authorService.update(authorStub.getId(), authorStub);
-
-//        var expected = ResponseEntity.status(HttpStatus.CREATED).body(authorStub);
         assertEquals(authorStub, author);
-
         verify(authorRepository, times(1)).findById(authorStub.getId());
         verify(authorRepository, times(1)).save(authorStub);
     }
 
-    public Author update(String id, Author author) {
-        var optAuthor = authorRepository.findById(id);
-        if (optAuthor.isPresent()) {
-            Author existingAuthor = optAuthor.get();
-            author.setId(id);
-            Author updatedAuthor = existingAuthor.setAuthorOrDefault(author);
-            return authorRepository.save(updatedAuthor);
-        }
-        return new Author();
+    @Test
+    public void testDeleteAuthor() {
+        Mockito.when(authorRepository.findById(authorStub.getId()))
+                .thenReturn(Optional.of(authorStub));
+        doNothing().when(authorRepository).deleteById(authorStub.getId());
+        var actual = authorService.delete(authorStub.getId());
+        var expected = CustomResponseEntity.NO_CONTENT();
+        assertEquals(JSONUtil.objectToJson(actual), JSONUtil.objectToJson(expected));
+        verify(authorRepository, times(1)).findById(authorStub.getId());
+        verify(authorRepository, times(1)).deleteById(authorStub.getId());
     }
 
 }

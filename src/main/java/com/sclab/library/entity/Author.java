@@ -58,8 +58,10 @@ public class Author implements Serializable {
         this.email = Objects.requireNonNullElse(newAuthor.getEmail(), this.email);
         this.age = Objects.requireNonNullElse(newAuthor.getAge(), this.age);
         this.country = Objects.requireNonNullElse(newAuthor.getCountry(), this.country);
-        this.authorBooks = Objects.requireNonNullElse(newAuthor.getAuthorBooks(), this.authorBooks);
-        this.books = Objects.requireNonNullElse(newAuthor.getBooks(), this.books);
+        if (newAuthor.getAuthorBooks() != this.authorBooks)
+            this.authorBooks = Objects.requireNonNullElse(newAuthor.getAuthorBooks(), this.authorBooks);
+        if (newAuthor.getBooks() != this.books)
+            this.books = Objects.requireNonNullElse(newAuthor.getBooks(), this.books);
         return this;
     }
 
