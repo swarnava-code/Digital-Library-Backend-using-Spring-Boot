@@ -81,9 +81,10 @@ Before starting the Spring Boot application, ensure that the following component
    - Click Import
 
 
-## Resources
+## References
  - [Spring Docs](https://spring.io/guides)
  - [JPA query-methods-details](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html)
  - [JPA query-methods](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
  - [Unit Test Sample Code](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito)
  - [Monitor setup](https://medium.com/simform-engineering/revolutionize-monitoring-empowering-spring-boot-applications-with-prometheus-and-grafana-e99c5c7248cf)
+ - [Exception Priority Set](https://stackoverflow.com/questions/40334360/how-to-set-priority-in-exceptionhandling-via-controlleradvice)

@@ -5,8 +5,11 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.UnexpectedTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,11 +19,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class SpecificExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(SpecificExceptionHandler.class);
 
     @ExceptionHandler(ConstraintViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @Order(0)
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException cve) {
         List<String> listOfConstraintViolation = cve.getConstraintViolations()
                 .stream()
@@ -66,14 +71,15 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    // if we use it only it's getting executed only
-    // @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleAllError(Exception e) {
-        e.printStackTrace();
-        logger.error(e.getMessage());
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleInvalidJsonData(HttpMessageNotReadableException
+                                                                httpMessageNotReadableException) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(CustomResponseEntity.keyValuePairsToMap(
-                        "error", "exception occur: " + e.getMessage()
+                        "error", "Data Parsing Failed - You passed invalid value",
+                        "exceptionClass", httpMessageNotReadableException.getClass(),
+                        "message", httpMessageNotReadableException.getMessage()
                 ));
     }
 
