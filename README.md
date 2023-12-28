@@ -71,6 +71,85 @@ Before starting the Spring Boot application, ensure that the following component
     - Set up logging and monitoring tools as needed for tracking application behavior and performance.
 
 
+## ER Diagram
+
+```mermaid
+erDiagram
+    BOOK ||--|{ AUTHOR_BOOK : writtenByAuthorTrack
+    AUTHOR ||--|{ AUTHOR_BOOK : isWroteBookTrack
+    
+    STUDENT ||..|| CARD  : uses_active
+    STUDENT |o..o{ CARD  : have_expired
+    
+    CARD ||..|{ TRANSACTION : issueOrReturn
+    BOOK ||..|| TRANSACTION : issueOrReturn
+    
+    BOOK {
+        String id PK "uuid"
+        String name
+        int number_of_pages "at-least 1 page"
+        String language
+        boolean available
+        enum genre "[FICTIONAL,
+            NON_FICTIONAL,
+            GEOGRAPHY,
+            HISTORY,
+            POLITICAL_SCIENCE,
+            BOTANY,
+            CHEMISTRY,
+            MATHEMATICS,
+            PHYSICS]"
+        boolean available
+        String isbn_number
+        String published_date
+    }
+    AUTHOR {
+        String id PK "uuid"
+        int age
+        String countery
+        String email
+        String name
+    }
+    AUTHOR_BOOK {
+        String id PK "uuid"
+        String author_id FK "author(id), uuid"
+        String book_id FK "book(id), uuid"
+    }
+    CARD {
+        String id PK "uuid"
+        date created_on
+        String email
+        enum status "[ACTIVE, EXPIRED]"
+        int total_issued_book
+        date updated_on
+        date valid_upto
+    }
+    STUDENT {
+        String id PK "uuid"
+        int age
+        date created_on
+        String email
+        String name
+        String phone_number
+        date update_on
+        String card_id FK "card(id), uuid"
+    }
+    TRANSACTION {
+        String id PK "uuid"
+        date book_due_date
+        date created_on
+        double fine_amount
+        boolean is_issued
+        boolean is_returned
+        enum status "[ACTIVE,EXPIRED]"
+        date transaction_date
+        date updated_on
+        String book_id FK "book(id), uuid"
+        String card_id FK "card(id), uuid"
+    }
+```
+
+
 ## Grafana dashboard
 - Run Docker to host prometheus and grafana
 - Open [Grafana Dashboard](http://localhost:3000/dashboards)
