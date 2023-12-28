@@ -74,6 +74,9 @@ Before starting the Spring Boot application, ensure that the following component
 ## ER Diagram
 
 ```mermaid
+---
+title: Entity-Relationship Diagram
+---
 erDiagram
     BOOK ||--|{ AUTHOR_BOOK : writtenByAuthorTrack
     AUTHOR ||--|{ AUTHOR_BOOK : isWroteBookTrack
@@ -147,6 +150,83 @@ erDiagram
     }
 ```
 
+## Architecture Diagram
+
+
+
+```mermaid
+---
+title: Architecture Diagram
+---
+flowchart LR
+
+    subgraph externalClientApp[External Client Apps]
+        PostMan[["PostMan"]]:::externalSystem
+        Client[["Client"]]:::externalSystem
+        WebApp[["Web App"]]:::externalSystem
+        MobileApp[["Mobile App"]]:::externalSystem
+    end
+
+    subgraph controller
+        PostMan--interact-->TestController
+        Client--interact-->AuthorController
+        Client--interact-->BookController
+        Client--interact-->AssignAuthorBookController
+        MobileApp--interact-->TransactionController
+        MobileApp--interact-->StudentController
+        MobileApp--interact-->CardController
+        WebApp--interact-->ReportController
+   end
+
+    subgraph apiService["API service"]
+        AuthorController--interact-->AuthorService
+        BookController--interact-->BookService
+        AssignAuthorBookController--interact-->AssignAuthorBookService
+        StudentController--interact-->StudentService
+        CardController--interact-->CardService
+        TransactionController--interact-->TransactionService
+        ReportController--interact-->TransactionService
+        ReportController--interact-->StudentService
+    end
+    
+    subgraph repository
+        AuthorService--interact-->AuthorRepository
+        BookService--interact-->BookRepository
+        AssignAuthorBookService--interact-->AuthorBookRepository
+        StudentService--interact-->StudentRepository
+        CardService--interact-->CardRepository
+        TransactionService--interact-->TransactionRepository
+    end
+
+    subgraph entity["database"]
+        AuthorRepository--insert-->Author
+        BookRepository--insert-->Book
+        AuthorBookRepository--insert-->AuthorBook
+        StudentRepository--insert-->Student
+        CardRepository--insert-->Card
+        TransactionRepository--insert-->Transaction
+        User
+    end
+
+    subgraph kafkaService["Kafka-Mail-Notification sub service"]
+        KafkaListenerService--sendSimpleEmail-->EmailService
+        CardService--getById-->KafkaListenerService
+        KafkaProducerService
+        Kafka(("Kafka MQ"))--consume notification data-->KafkaListenerService
+        TransactionService--sendBookIssuedNotification-->KafkaProducerService
+        KafkaProducerService--send notification-->Kafka
+    end
+    kafkaService:::internalSystem
+    
+    EmailService--Sends notification emails to-->StudentGmail(("Student Gmail"))
+    StudentGmail:::person
+    
+
+%% Element type definitions
+    classDef person fill:#08427b, color:#fff
+    classDef internalSystem fill:#1168bd
+    classDef externalSystem fill:#4040bd, color:#fff
+```
 
 ## Grafana dashboard
 - Run Docker to host prometheus and grafana
@@ -165,3 +245,6 @@ erDiagram
  - [Unit Test Sample Code](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito)
  - [Monitor setup](https://medium.com/simform-engineering/revolutionize-monitoring-empowering-spring-boot-applications-with-prometheus-and-grafana-e99c5c7248cf)
  - [Exception Priority Set](https://stackoverflow.com/questions/40334360/how-to-set-priority-in-exceptionhandling-via-controlleradvice)
+ - [mermaid flowchart](https://lukemerrett.com/building-c4-diagrams-in-mermaid/)
+ - [mermaid flowchart official](https://mermaid.js.org/syntax/flowchart.html)
+
