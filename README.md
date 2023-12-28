@@ -79,7 +79,6 @@ erDiagram
     AUTHOR ||--|{ AUTHOR_BOOK : isWroteBookTrack
     
     STUDENT ||..|| CARD  : uses_active
-    STUDENT |o..o{ CARD  : have_expired
     
     CARD ||..|{ TRANSACTION : issueOrReturn
     BOOK ||..|| TRANSACTION : issueOrReturn
@@ -89,7 +88,7 @@ erDiagram
         String name
         int number_of_pages "at-least 1 page"
         String language
-        boolean available
+        boolean available "true, false"
         enum genre "[FICTIONAL,
             NON_FICTIONAL,
             GEOGRAPHY,
@@ -99,9 +98,8 @@ erDiagram
             CHEMISTRY,
             MATHEMATICS,
             PHYSICS]"
-        boolean available
-        String isbn_number
-        String published_date
+        String isbn_number "13 digit"
+        String published_date "timestamp"
     }
     AUTHOR {
         String id PK "uuid"
