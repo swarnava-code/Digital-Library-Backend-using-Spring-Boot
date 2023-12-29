@@ -1,7 +1,6 @@
 # Digital Library Management System
 
 
-
 ## Setup
 Step-1:<br>
 Add [application.properties](src/main/resources/application.properties)
@@ -150,83 +149,92 @@ erDiagram
     }
 ```
 
-## Architecture Diagram
-
-
+## C4 Diagram
 
 ```mermaid
 ---
-title: Architecture Diagram
+title: C4 Diagram
 ---
-flowchart LR
+flowchart TD
+    Student[/"👤\n Student"\]:::person
+    TechnicalPerson[/"👤\n Developer"\]:::person
+    Admin[/"👤\n ADMIN"\]:::person
+    Gmail[["📧\n Gmail APP"]]:::externalApp
+    TechnicalPerson -- test - crud --> PostMan
+    Admin -- use - crud --> Client
+    Admin -- use - crud --> WebApp
+    Admin -- use - crud --> MobileApp
+    Student -- use - r --> Client
+    Student -- use - r --> WebApp
+    Student -- use - r --> MobileApp
+    Gmail -- receive email --> Student
 
-    subgraph externalClientApp[External Client Apps]
-        PostMan[["PostMan"]]:::externalSystem
-        Client[["Client"]]:::externalSystem
+    subgraph ClientApp[Client Apps - UI]
+        PostMan[["PostMan Testing Tool"]]:::externalSystem
+        Client[["Client App"]]:::externalSystem
         WebApp[["Web App"]]:::externalSystem
         MobileApp[["Mobile App"]]:::externalSystem
     end
-
-    subgraph controller
-        PostMan--interact-->TestController
-        Client--interact-->AuthorController
-        Client--interact-->BookController
-        Client--interact-->AssignAuthorBookController
-        MobileApp--interact-->TransactionController
-        MobileApp--interact-->StudentController
-        MobileApp--interact-->CardController
-        WebApp--interact-->ReportController
-   end
-
-    subgraph apiService["API service"]
-        AuthorController--interact-->AuthorService
-        BookController--interact-->BookService
-        AssignAuthorBookController--interact-->AssignAuthorBookService
-        StudentController--interact-->StudentService
-        CardController--interact-->CardService
-        TransactionController--interact-->TransactionService
-        ReportController--interact-->TransactionService
-        ReportController--interact-->StudentService
+    subgraph Controller
+        PostMan -- interact --> TestController
+        Client -- interact --> AuthorController
+        Client -- interact --> BookController
+        Client -- interact --> AssignAuthorBookController
+        MobileApp -- interact for book ISSUE/RETURN --> TransactionController
+        MobileApp -- interact --> StudentController
+        MobileApp -- interact --> CardController
+        WebApp -- interact --> ReportController
     end
-    
-    subgraph repository
-        AuthorService--interact-->AuthorRepository
-        BookService--interact-->BookRepository
-        AssignAuthorBookService--interact-->AuthorBookRepository
-        StudentService--interact-->StudentRepository
-        CardService--interact-->CardRepository
-        TransactionService--interact-->TransactionRepository
+    subgraph ApiService["API service"]
+        AuthorController -- interact --> AuthorService
+        BookController -- interact --> BookService
+        AssignAuthorBookController -- interact --> AssignAuthorBookService
+        StudentController -- interact --> StudentService
+        CardController -- interact --> CardService
+        TransactionController -- interact --> TransactionService
+        ReportController -- interact --> TransactionService
+        ReportController -- interact --> StudentService
     end
-
-    subgraph entity["database"]
-        AuthorRepository--insert-->Author
-        BookRepository--insert-->Book
-        AuthorBookRepository--insert-->AuthorBook
-        StudentRepository--insert-->Student
-        CardRepository--insert-->Card
-        TransactionRepository--insert-->Transaction
+    subgraph RedisServer[RedisServer]
+        Redis[("Redis Storage")]:::dataStorage
+    end
+    subgraph Repository
+        AuthorService -- create --> AuthorRepository
+        BookService -- interact --> BookRepository
+        AssignAuthorBookService -- interact --> AuthorBookRepository
+        StudentService -- interact --> StudentRepository
+        CardService -- interact --> CardRepository
+        TransactionService -- interact --> TransactionRepository
+        AuthorService -- @Cacheable/get --> Redis
+        Redis -- @CachePut/update , @CacheEvict/delete --> AuthorRepository
+    end
+    subgraph Entity["Database"]
+        AuthorRepository -- crud --> AuthorEntity["Author Table"]
+        BookRepository -- crud --> BookEntityEntity["BookEntity Table"]
+        AuthorBookRepository -- crud --> AuthorBookEntity["AuthorBook Table"]
+        StudentRepository -- crud --> StudentEntity["Student Table"]
+        CardRepository -- crud --> CardEntity["Card Table"]
+        TransactionRepository -- crud --> TransactionEntity["Transaction Table"]
         User
     end
-
-    subgraph kafkaService["Kafka-Mail-Notification sub service"]
-        KafkaListenerService--sendSimpleEmail-->EmailService
-        CardService--getById-->KafkaListenerService
-        KafkaProducerService
-        Kafka(("Kafka MQ"))--consume notification data-->KafkaListenerService
-        TransactionService--sendBookIssuedNotification-->KafkaProducerService
-        KafkaProducerService--send notification-->Kafka
+    Entity:::dataStorage
+    subgraph KafkaService["Kafka-Mail-Notification-Sender service"]
+        KafkaListenerService -- sendSimpleEmail --> EmailService
+        CardService -- getById --> KafkaListenerService
+        TransactionService -- send issue or return notification ---> KafkaProducerService
+        KafkaProducerService -- produce notification --> Kafka
+        Kafka[("Kafka MQ")]:::dataStorage -- consume notification --> KafkaListenerService
     end
-    kafkaService:::internalSystem
-    
-    EmailService--Sends notification emails to-->StudentGmail(("Student Gmail"))
-    StudentGmail:::person
-    
-
+    KafkaService:::internalSystem
+    EmailService -- Send notification email to --> Gmail
 %% Element type definitions
-    classDef person fill:#08427b, color:#fff
-    classDef internalSystem fill:#1168bd
-    classDef externalSystem fill:#4040bd, color:#fff
+    classDef person fill: #08427b, color: #fff
+    classDef internalSystem fill: #1168bd, color: #fff
+    classDef externalSystem fill: #4040bd, color: #fff
+    classDef externalApp fill: #300000, color: #fff
+    classDef dataStorage fill: #777700, color: #fff
 ```
+
 
 ## Grafana dashboard
 - Run Docker to host prometheus and grafana
@@ -247,4 +255,3 @@ flowchart LR
  - [Exception Priority Set](https://stackoverflow.com/questions/40334360/how-to-set-priority-in-exceptionhandling-via-controlleradvice)
  - [mermaid flowchart](https://lukemerrett.com/building-c4-diagrams-in-mermaid/)
  - [mermaid flowchart official](https://mermaid.js.org/syntax/flowchart.html)
-
