@@ -205,8 +205,8 @@ flowchart TD
         StudentService -- interact --> StudentRepository
         CardService -- interact --> CardRepository
         TransactionService -- interact --> TransactionRepository
-        AuthorService -- @Cacheable/get --> Redis
-        Redis -- @CachePut/update , @CacheEvict/delete --> AuthorRepository
+        AuthorService -- Cacheable/get --> Redis
+        Redis -- CachePut/update , CacheEvict/delete --> AuthorRepository
     end
     subgraph Entity["Database"]
         AuthorRepository -- crud --> AuthorEntity["Author Table"]
