@@ -3,6 +3,7 @@ package com.sclab.library.advice;
 import com.sclab.library.util.CustomResponseEntity;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.UnexpectedTypeException;
+import org.apache.kafka.common.KafkaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -60,7 +61,7 @@ public class SpecificExceptionHandler {
     }
 
     @ExceptionHandler(ConnectException.class)
-    public ResponseEntity<Object> handleConnectException(ConnectException ce){
+    public ResponseEntity<Object> handleConnectException(ConnectException ce) {
         logger.error(ce.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(CustomResponseEntity.keyValuePairsToMap(
@@ -80,6 +81,17 @@ public class SpecificExceptionHandler {
                         "error", "Data Parsing Failed - You passed invalid value",
                         "exceptionClass", httpMessageNotReadableException.getClass(),
                         "message", httpMessageNotReadableException.getMessage()
+                ));
+    }
+
+    @ExceptionHandler(KafkaException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<Object> handleKafkaException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(CustomResponseEntity.keyValuePairsToMap(
+                        "error", "Kafka connection issue",
+                        "exceptionClass", KafkaException.class,
+                        "message", "Kafka server might not active"
                 ));
     }
 
