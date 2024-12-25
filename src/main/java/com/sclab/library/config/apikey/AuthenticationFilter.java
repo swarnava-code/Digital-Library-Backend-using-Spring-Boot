@@ -20,16 +20,35 @@ public class AuthenticationFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(
-      jakarta.servlet.ServletRequest request, 
-      jakarta.servlet.ServletResponse response, 
-      FilterChain chain) throws IOException, ServletException {
+            jakarta.servlet.ServletRequest request,
+            jakarta.servlet.ServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
         try {
             Authentication authentication = authenticationService.getAuthentication((HttpServletRequest) request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
-            return;
+            // Set HTTP response status and content type
+            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpResponse.setContentType("application/json");
+
+            // Construct the JSON response
+            String jsonResponse = String.format(
+                    "{\"timestamp\":\"%s\",\"status\":%d,\"error\":\"Unauthorized\",\"message\":\"%s\",\"path\":\"%s\"}",
+                    java.time.LocalDateTime.now(),
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    ex.getMessage(),
+                    ((HttpServletRequest) request).getRequestURI()
+            );
+
+            // Write JSON response
+            httpResponse.getWriter().write(jsonResponse);
+            return; // Stop further processing
         }
+
         chain.doFilter(request, response);
     }
+
 }
