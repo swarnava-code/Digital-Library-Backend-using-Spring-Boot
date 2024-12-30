@@ -21,7 +21,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
             .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-            .addFilterBefore(new AuthenticationFilter(new AuthenticationService(apiKeyService)), 
+            .addFilterBefore(new AuthenticationFilter(new AuthenticationService(apiKeyService)),
                              org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

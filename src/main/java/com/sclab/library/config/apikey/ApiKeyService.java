@@ -16,9 +16,9 @@ public class ApiKeyService {
 
     @Cacheable(cacheNames = "apiKeyEntities", key = "#keyName")
     public String getApiKey(String keyName) {
-        Optional<ApiKeyEntity> optionalApiKey = apiKeyRepository.findByKeyValue(keyName);
+        Optional<ApiKeyEntity> optionalApiKey = apiKeyRepository.findByKeyValueWithLogging(keyName);
         if (optionalApiKey == null || !optionalApiKey.isPresent()) {
-            throw new IllegalArgumentException("API Key not found!");
+            throw new IllegalArgumentException(KnownSecurityException.API_KEY_NOT_FOUND.getMessage());
         }
         return optionalApiKey.get().getKeyValue();
     }

@@ -4,13 +4,17 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class AuthenticationFilter extends GenericFilterBean {
+    private static Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
 
     private final AuthenticationService authenticationService;
 
@@ -30,24 +34,25 @@ public class AuthenticationFilter extends GenericFilterBean {
             Authentication authentication = authenticationService.getAuthentication((HttpServletRequest) request);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
-            // Set HTTP response status and content type
-            httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            Optional<KnownSecurityException> optionalKnownSecurityException = KnownSecurityException.fromMessage(ex.getMessage());
+            int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+            if (optionalKnownSecurityException.isPresent()) {
+                status = optionalKnownSecurityException.get().getHttpStatus();
+            }
             httpResponse.setContentType("application/json");
-
-            // Construct the JSON response
+            httpResponse.setStatus(status);
             String jsonResponse = String.format(
-                    "{\"timestamp\":\"%s\",\"status\":%d,\"error\":\"Unauthorized\",\"message\":\"%s\",\"path\":\"%s\"}",
+                    "{\"timestamp\":\"%s\",\"status\":%d,\"message\":\"%s\",\"path\":\"%s\"}",
                     java.time.LocalDateTime.now(),
-                    HttpServletResponse.SC_UNAUTHORIZED,
+                    status,
                     ex.getMessage(),
                     ((HttpServletRequest) request).getRequestURI()
             );
-
             // Write JSON response
             httpResponse.getWriter().write(jsonResponse);
+            logger.error(jsonResponse);
             return; // Stop further processing
         }
-
         chain.doFilter(request, response);
     }
 

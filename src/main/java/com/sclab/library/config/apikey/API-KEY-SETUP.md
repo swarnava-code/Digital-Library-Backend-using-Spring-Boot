@@ -21,4 +21,20 @@ swarnavachakraborty@Swarnavas-MacBook-Air ~ %
 4. If you hit the API without the API Key, you will get the following response.
 ```shell
 401 Unauthorized
+{
+    "timestamp": "2024-12-25T23:16:13.339293",
+    "status": 401,
+    "message": "API Key not found!",
+    "path": "/author/c4a4580f-6589-4003-9e2c-cd197c3052c5"
+}
+```
+or
+```shell
+401 Unauthorized
+{
+    "timestamp": "2024-12-25T23:16:35.779990",
+    "status": 401,
+    "message": "Missing API Key",
+    "path": "/author/c4a4580f-6589-4003-9e2c-cd197c3052c5"
+}
 ```

@@ -18,12 +18,12 @@ public class AuthenticationService {
     public Authentication getAuthentication(HttpServletRequest request) {
         String apiKeyValue = request.getHeader(API_KEY);
         if (apiKeyValue == null) {
-            throw new BadCredentialsException("Missing API Key");
+            throw new BadCredentialsException(KnownSecurityException.MISSING_API_KEY.getMessage());
         }
 
         String storedApiKey = apiKeyService.getApiKey(apiKeyValue);
         if (!apiKeyValue.equals(storedApiKey)) {
-            throw new BadCredentialsException("Invalid API Key");
+            throw new BadCredentialsException(KnownSecurityException.INVALID_API_KEY.getMessage());
         }
 
         return new ApiKeyAuthentication(apiKeyValue, AuthorityUtils.NO_AUTHORITIES);
