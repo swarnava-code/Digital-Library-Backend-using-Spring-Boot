@@ -2,8 +2,6 @@ package com.sclab.library.config.apikey;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 
 public class AuthenticationService {
 
@@ -15,18 +13,24 @@ public class AuthenticationService {
 
     private final String API_KEY = "X-API-KEY";
 
-    public Authentication getAuthentication(HttpServletRequest request) {
+    public ApiEntityDTO getAuthentication(HttpServletRequest request) {
         String apiKeyValue = request.getHeader(API_KEY);
         if (apiKeyValue == null) {
             throw new BadCredentialsException(KnownSecurityException.MISSING_API_KEY.getMessage());
         }
-
-        String storedApiKey = apiKeyService.getApiKey(apiKeyValue);
+        ApiEntityDTO apiEntityDTO;
+        try{
+             apiEntityDTO = apiKeyService.getApiKeyEntity(apiKeyValue);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw e;
+        }
+        String storedApiKey = apiEntityDTO.keyValue();
         if (!apiKeyValue.equals(storedApiKey)) {
             throw new BadCredentialsException(KnownSecurityException.INVALID_API_KEY.getMessage());
         }
 
-        return new ApiKeyAuthentication(apiKeyValue, AuthorityUtils.NO_AUTHORITIES);
+        return apiEntityDTO;
     }
 
 }
