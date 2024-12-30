@@ -40,7 +40,8 @@ public class AuthenticationFilter extends GenericFilterBean {
 
             // authentication - 401
             ApiEntityDTO apiKeyEntity = authenticationService.getAuthentication((HttpServletRequest) request);
-            Authentication authentication = new ApiKeyAuthentication(apiKeyEntity.keyValue(), AuthorityUtils.NO_AUTHORITIES);
+            Authentication authentication = new ApiKeyAuthentication(apiKeyEntity.keyValue(),
+                    AuthorityUtils.NO_AUTHORITIES);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // authorization - 403
@@ -63,7 +64,8 @@ public class AuthenticationFilter extends GenericFilterBean {
                 return;
             }
         } catch (Exception ex) {
-            Optional<KnownSecurityException> optionalKnownSecurityException = KnownSecurityException.fromMessage(ex.getMessage());
+            Optional<KnownSecurityException> optionalKnownSecurityException =
+                    KnownSecurityException.fromMessage(ex.getMessage());
             int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
             if (optionalKnownSecurityException.isPresent()) {
                 status = optionalKnownSecurityException.get().getHttpStatus();
@@ -90,12 +92,9 @@ public class AuthenticationFilter extends GenericFilterBean {
      * all user only eligible to use GET call, except ADMIN
      */
     private boolean isUserAuthorized(String userType, String requestMethod){
-        System.out.println("isUserAuthorized");
         if(!userType.equalsIgnoreCase("ADMIN") && !requestMethod.equalsIgnoreCase("GET")){
-            System.out.println("FALSE");
             return false;
         }
-        System.out.println("TRUE");
         return true;
     }
 

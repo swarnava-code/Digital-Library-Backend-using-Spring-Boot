@@ -20,7 +20,6 @@ public class ApiKeyService {
             throw new IllegalArgumentException(KnownSecurityException.API_KEY_NOT_FOUND.getMessage());
         }
         var ok = optionalApiKey.get();
-        System.out.println("hhh");
         ApiEntityDTO oo = new ApiEntityDTO(ok.getKeyValue(), ok.getUserType(), ok.getRoleId());
         return oo;
     }
