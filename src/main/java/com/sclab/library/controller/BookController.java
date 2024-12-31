@@ -1,6 +1,7 @@
 package com.sclab.library.controller;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
+import com.sclab.library.advice.CircuitBreakerRecord;
 import com.sclab.library.entity.Book;
 import com.sclab.library.service.BookService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
@@ -59,7 +60,8 @@ public class BookController {
         return "Working " + oo;
     }
 
-    public ResponseEntity<String> fallbackResponse(Throwable throwable) {
-        return ResponseEntity.internalServerError().body("Please contact with Developer: " + throwable.getMessage());
+    public String fallbackResponse(Throwable throwable) {
+        return new CircuitBreakerRecord(throwable).toString();
     }
+
 }

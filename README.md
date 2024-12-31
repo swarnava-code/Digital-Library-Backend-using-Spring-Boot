@@ -1,6 +1,5 @@
 # Digital Library Management System
 
-
 ## Setup
 Step-1:<br>
 Add [application.properties](src/main/resources/application.properties)
@@ -236,22 +235,51 @@ flowchart TD
 ```
 
 
+## Swagger Docs
+- [swagger-ui.html](localhost:8081/swagger-ui.html)
+
+
 ## Grafana dashboard
 - Run Docker to host prometheus and grafana
 - Open [Grafana Dashboard](http://localhost:3000/dashboards)
+- (For first time) : username & password is '`admin`', then set new password
 - Check existing template [here](http://localhost:3000/dashboards)
 - If template not visible or want new one, import template
    - Click `+` and select `Import Dashboard` or visit [import page](http://localhost:3000/dashboard/import)
    - Put template code(`11378`) under `Import via grafana.com`. Template details: [11378](https://grafana.com/grafana/dashboards/11378-justai-system-monitor/)
    - Click Import
+   - For Resilience4J: use (`10663`)
+
+
+## Code Coverage Report
+
+### Using Junit
+1. Open any test file or test package
+2. Right click on it
+3. More Run/Debug
+4. Run 'Test' with Coverage 
+5. Generate Coverage Report...
+
+### Using Jacoco
+1. Run the following commands
+```shell
+mvn clean test
+mvn jacoco:report
+```
+2. Open HTML Report
+[target/site/jacoco/index.html](target/site/jacoco/index.html)
+
 
 
 ## References
  - [Spring Docs](https://spring.io/guides)
  - [JPA query-methods-details](https://docs.spring.io/spring-data/jpa/reference/repositories/query-methods-details.html)
  - [JPA query-methods](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
- - [Unit Test Sample Code](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito)
+ - [Unit Test Sample Code](https://github.com/in28minutes/spring-unit-testing-with-junit-and-mockito/blob/master/src/test/java/com/in28minutes/unittesting/unittesting/spike/JsonPathTest.java)
+ - [Unit Test Sample Code](https://www.youtube.com/watch?v=bcVCg0zxg4Y)
  - [Monitor setup](https://medium.com/simform-engineering/revolutionize-monitoring-empowering-spring-boot-applications-with-prometheus-and-grafana-e99c5c7248cf)
  - [Exception Priority Set](https://stackoverflow.com/questions/40334360/how-to-set-priority-in-exceptionhandling-via-controlleradvice)
  - [mermaid flowchart](https://lukemerrett.com/building-c4-diagrams-in-mermaid/)
  - [mermaid flowchart official](https://mermaid.js.org/syntax/flowchart.html)
+ - [SMTP Mail Pwd setup](https://www.youtube.com/watch?v=L5V6yicW-ao)
+

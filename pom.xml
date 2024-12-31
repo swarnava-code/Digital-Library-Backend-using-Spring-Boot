@@ -140,11 +140,13 @@
         </dependency>
 
 
-        <!-- Optional: For Prometheus integration -->
+        <!-- Optional: For Prometheus integration (Micrometer Prometheus Registry) -->
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+
+
 
 
     </dependencies>
