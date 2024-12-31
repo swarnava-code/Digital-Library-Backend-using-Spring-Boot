@@ -1,12 +1,16 @@
 package com.sclab.library.util;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil {
 
     public static String objectToJson(Object object) {
-        Gson gson = new Gson();
-        return gson.toJson(object);
+        try {
+            return new ObjectMapper().writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

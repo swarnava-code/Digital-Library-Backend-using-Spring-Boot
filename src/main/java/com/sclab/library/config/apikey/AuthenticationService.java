@@ -18,13 +18,7 @@ public class AuthenticationService {
         if (apiKeyValue == null) {
             throw new BadCredentialsException(KnownSecurityException.MISSING_API_KEY.getMessage());
         }
-        ApiEntityDTO apiEntityDTO;
-        try{
-             apiEntityDTO = apiKeyService.getApiKeyEntity(apiKeyValue);
-        } catch (Exception e){
-            e.printStackTrace();
-            throw e;
-        }
+        ApiEntityDTO apiEntityDTO = apiKeyService.getApiKeyEntity(apiKeyValue);
         String storedApiKey = apiEntityDTO.keyValue();
         if (!apiKeyValue.equals(storedApiKey)) {
             throw new BadCredentialsException(KnownSecurityException.INVALID_API_KEY.getMessage());
