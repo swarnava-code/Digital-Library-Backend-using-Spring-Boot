@@ -4,3 +4,20 @@ management:
       exposure:
 #        include: '*'
         include: [ "prometheus" ]
+
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true
+        sliding-window-size: 10
+        permitted-number-of-calls-in-half-open-state: 3
+        wait-duration-in-open-state: 10s
+        failure-rate-threshold: 50
+        event-consumer-buffer-size: 10
+    instances:
+      myServiceCircuitBreaker:
+        base-config: default
+        sliding-window-size: 20
+        wait-duration-in-open-state: 5s

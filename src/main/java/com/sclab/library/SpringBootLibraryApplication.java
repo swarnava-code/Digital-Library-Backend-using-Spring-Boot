@@ -10,7 +10,8 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 public class SpringBootLibraryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringBootLibraryApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(SpringBootLibraryApplication.class, args);
+    }
+
 }
